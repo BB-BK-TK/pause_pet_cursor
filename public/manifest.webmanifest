@@ -1,0 +1,11 @@
+{
+  "name": "Pause Pet",
+  "short_name": "Pause Pet",
+  "description": "집중하는 동안, 작은 펫이 조용히 기다려주는 집중 친구",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fff9f0",
+  "theme_color": "#fff9f0",
+  "lang": "ko",
+  "orientation": "portrait"
+}

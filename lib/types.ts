@@ -7,4 +7,10 @@ export type ScreenName =
   | "giveUpConfirm"
   | "success";
 
-export type PetMood = "idle" | "waiting" | "happy" | "comfort";
+/** Pet emotional state across the focus loop */
+export type PetMood =
+  | "idle"
+  | "waiting"
+  | "focusing"
+  | "happy"
+  | "comfort";

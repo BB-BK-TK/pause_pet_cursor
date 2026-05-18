@@ -1,4 +1,4 @@
-import PageHeader from "@/components/PageHeader";
+import AppShell from "@/components/AppShell";
 import PrimaryButton from "@/components/PrimaryButton";
 import PetDisplay from "@/components/PetDisplay";
 import SoftCard from "@/components/SoftCard";
@@ -20,69 +20,72 @@ export default function HomeScreen({ state, onStart }: HomeScreenProps) {
       : COPY.home.statusReturning;
 
   return (
-    <div className="flex flex-col gap-7">
-      <PageHeader title={COPY.app.name} subtitle={COPY.app.tagline} />
-
-      <SoftCard variant="highlight" className="px-6 py-8">
-        <p className="mb-6 text-center text-sm leading-relaxed text-stone-600">
-          {statusText}
-        </p>
-        <PetDisplay
-          mood="idle"
-          petLevel={state.petLevel}
-          petExp={state.petExp}
-          size="lg"
-        />
-      </SoftCard>
-
-      <div className="flex gap-2.5">
-        <StatChip
-          label={COPY.home.statMinutes}
-          value={`${state.totalFocusMinutes}분`}
-        />
-        <StatChip
-          label={COPY.home.statSessions}
-          value={`${state.completedSessions.length}회`}
-        />
-        <StatChip label={COPY.home.statStreak} value={`${state.streak}일`} />
-      </div>
-
-      <div className="pt-1">
+    <AppShell
+      footer={
         <PrimaryButton onClick={onStart}>{COPY.home.ctaStart}</PrimaryButton>
-      </div>
-
-      <SoftCard className="!p-5">
-        <h2 className="text-sm font-bold text-stone-800">
-          {COPY.home.historyTitle}
-        </h2>
-        {recent.length === 0 ? (
-          <p className="mt-4 text-sm leading-relaxed text-stone-500">
-            {COPY.home.historyEmpty}
-          </p>
-        ) : (
-          <ul className="mt-4 space-y-2.5">
-            {recent.map((session) => (
-              <li
-                key={session.id}
-                className="flex flex-col gap-0.5 rounded-2xl bg-amber-50/70 px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
-              >
-                <span className="font-semibold text-stone-800">
-                  {COPY.home.sessionLine(session.durationMinutes)}
-                </span>
-                <span className="text-xs text-stone-500 sm:text-sm">
-                  {COPY.home.growthPoints(
-                    expForDuration(session.durationMinutes),
-                  )}{" "}
-                  · {formatSessionTime(session.completedAt)}
-                </span>
-              </li>
-            ))}
-          </ul>
-        )}
-        <p className="mt-5 border-t border-stone-100/80 pt-4 text-center text-xs text-stone-500">
-          {COPY.home.petGrowth(state.petLevel, state.petExp)}
+      }
+    >
+      <div className="flex flex-col gap-5 pb-2">
+        <p className="text-center text-sm leading-relaxed text-stone-600">
+          {COPY.app.tagline}
         </p>
-      </SoftCard>
-    </div>
+        <p className="loop-hint">{COPY.home.loopHint}</p>
+
+        <SoftCard variant="highlight" className="px-5 py-6">
+          <p className="mb-4 text-center text-sm font-medium text-stone-700">
+            {statusText}
+          </p>
+          <PetDisplay
+            mood="idle"
+            petLevel={state.petLevel}
+            petExp={state.petExp}
+            size="lg"
+          />
+          <p className="pet-speech mt-4">{COPY.home.petWhisper}</p>
+        </SoftCard>
+
+        <div className="flex gap-2">
+          <StatChip
+            label={COPY.home.statMinutes}
+            value={`${state.totalFocusMinutes}분`}
+          />
+          <StatChip
+            label={COPY.home.statSessions}
+            value={`${state.completedSessions.length}회`}
+          />
+          <StatChip label={COPY.home.statStreak} value={`${state.streak}일`} />
+        </div>
+
+        <SoftCard className="!p-4">
+          <h2 className="text-sm font-bold text-stone-800">
+            {COPY.home.historyTitle}
+          </h2>
+          {recent.length === 0 ? (
+            <p className="mt-3 text-sm leading-relaxed text-stone-500">
+              {COPY.home.historyEmpty}
+            </p>
+          ) : (
+            <ul className="mt-3 space-y-2">
+              {recent.map((session) => (
+                <li
+                  key={session.id}
+                  className="rounded-2xl bg-amber-50/80 px-3 py-2.5 text-sm"
+                >
+                  <span className="font-semibold text-stone-800">
+                    {COPY.home.sessionLine(session.durationMinutes)}
+                  </span>
+                  <span className="mt-0.5 block text-xs text-stone-500">
+                    {COPY.home.growthPoints(
+                      expForDuration(session.durationMinutes),
+                    )}{" "}
+                    · {formatSessionTime(session.completedAt)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </SoftCard>
+      </div>
+    </AppShell>
   );
 }

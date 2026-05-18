@@ -1,3 +1,4 @@
+import AppShell from "@/components/AppShell";
 import PrimaryButton from "@/components/PrimaryButton";
 import PetDisplay from "@/components/PetDisplay";
 import SoftCard from "@/components/SoftCard";
@@ -19,56 +20,75 @@ export default function SuccessScreen({
   onHome,
 }: SuccessScreenProps) {
   return (
-    <div className="flex flex-col gap-7 py-2">
-      <SoftCard variant="celebrate" className="relative overflow-hidden px-6 py-8 text-center">
-        <div
-          className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-amber-200/40 blur-2xl"
-          aria-hidden
-        />
-        <div
-          className="pointer-events-none absolute -bottom-6 -left-6 h-28 w-28 rounded-full bg-orange-200/30 blur-2xl"
-          aria-hidden
-        />
-
-        <p className="relative text-xs font-semibold uppercase tracking-widest text-amber-700">
-          {COPY.success.label}
-        </p>
-        <h1 className="relative mt-4 text-2xl font-bold leading-snug text-stone-900">
-          {COPY.success.title}
-        </h1>
-        <p className="relative mt-3 text-sm leading-relaxed text-stone-600">
-          {COPY.success.duration(durationMinutes)}
-        </p>
-
-        <div className="relative mt-8">
-          <PetDisplay
-            mood="happy"
-            petLevel={state.petLevel}
-            petExp={state.petExp}
-            size="hero"
+    <AppShell
+      footer={
+        <PrimaryButton onClick={onHome}>{COPY.success.ctaHome}</PrimaryButton>
+      }
+    >
+      <div className="flex flex-col gap-4 pb-2 animate-pop">
+        <SoftCard
+          variant="celebrate"
+          className="relative overflow-hidden px-5 py-7 text-center"
+        >
+          <span
+            className="celebrate-sparkle left-4 top-6"
+            aria-hidden
           />
-        </div>
+          <span
+            className="celebrate-sparkle right-6 top-10"
+            style={{ animationDelay: "0.3s" }}
+            aria-hidden
+          />
+          <span
+            className="celebrate-sparkle bottom-20 left-8"
+            style={{ animationDelay: "0.6s" }}
+            aria-hidden
+          />
 
-        <div className="relative mt-8">
-          <p className="text-sm font-medium text-stone-700">{COPY.success.growth}</p>
-          <p className="mt-2 inline-flex items-center rounded-full bg-gradient-to-r from-amber-100 to-orange-100 px-5 py-2 text-lg font-bold text-amber-900 shadow-sm">
+          <p className="relative text-xs font-semibold uppercase tracking-widest text-amber-700">
+            {COPY.success.label}
+          </p>
+          <h1 className="relative mt-3 text-2xl font-bold leading-snug text-stone-900">
+            {COPY.success.title}
+          </h1>
+          <p className="relative mt-2 text-sm text-stone-600">
+            {COPY.success.subtitle}
+          </p>
+          <p className="relative mt-2 text-sm text-stone-500">
+            {COPY.success.duration(durationMinutes)}
+          </p>
+
+          <div className="relative mt-6">
+            <PetDisplay
+              mood="happy"
+              petLevel={state.petLevel}
+              petExp={state.petExp}
+              size="hero"
+            />
+          </div>
+
+          <p className="relative mt-5 text-sm font-medium text-amber-900/90">
+            {COPY.success.growth}
+          </p>
+          <p className="relative mt-2 inline-flex rounded-full bg-gradient-to-r from-amber-200 to-orange-200 px-6 py-2.5 text-xl font-bold text-amber-950 shadow-md">
             {COPY.success.growthPoints(expGained)}
           </p>
+          <p className="pet-speech relative mx-auto mt-5 max-w-[16rem]">
+            {COPY.success.petLine}
+          </p>
+        </SoftCard>
+
+        <div className="flex gap-2">
+          <StatChip
+            label={COPY.success.statStreak}
+            value={COPY.success.statStreakValue(state.streak)}
+          />
+          <StatChip
+            label={COPY.success.statMinutes}
+            value={COPY.success.statMinutesValue(state.totalFocusMinutes)}
+          />
         </div>
-      </SoftCard>
-
-      <div className="flex gap-2.5">
-        <StatChip
-          label={COPY.success.statStreak}
-          value={COPY.success.statStreakValue(state.streak)}
-        />
-        <StatChip
-          label={COPY.success.statMinutes}
-          value={COPY.success.statMinutesValue(state.totalFocusMinutes)}
-        />
       </div>
-
-      <PrimaryButton onClick={onHome}>{COPY.success.ctaHome}</PrimaryButton>
-    </div>
+    </AppShell>
   );
 }

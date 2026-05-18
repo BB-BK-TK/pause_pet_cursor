@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
+import AppHeader from "@/components/AppHeader";
 import PetDisplay from "@/components/PetDisplay";
 import { usePausePetState } from "@/hooks/usePausePetState";
 import { COPY } from "@/lib/copy";
@@ -10,6 +11,13 @@ import FocusSetupScreen from "@/screens/FocusSetupScreen";
 import ActiveSessionScreen from "@/screens/ActiveSessionScreen";
 import GiveUpConfirmScreen from "@/screens/GiveUpConfirmScreen";
 import SuccessScreen from "@/screens/SuccessScreen";
+
+const screenTitles: Partial<Record<ScreenName, string>> = {
+  setup: "집중 준비",
+  active: "집중 중",
+  giveUpConfirm: "잠깐 쉬어가기",
+  success: "집중 완료",
+};
 
 export default function PausePetApp() {
   const { state, hydrated, recordCompletion } = usePausePetState();
@@ -44,15 +52,27 @@ export default function PausePetApp() {
 
   if (!hydrated) {
     return (
-      <main className="app-shell flex min-h-[100dvh] flex-col items-center justify-center">
-        <PetDisplay mood="idle" petLevel={1} petExp={0} showProgress={false} />
-        <p className="mt-6 text-sm text-stone-500">{COPY.app.loading}</p>
+      <main className="app-frame">
+        <div className="flex flex-1 flex-col items-center justify-center">
+          <PetDisplay
+            mood="idle"
+            petLevel={1}
+            petExp={0}
+            showProgress={false}
+          />
+          <p className="mt-6 text-sm text-stone-500">{COPY.app.loading}</p>
+        </div>
       </main>
     );
   }
 
   return (
-    <main className="app-shell min-h-[100dvh] animate-fade-up">
+    <main className="app-frame animate-fade-up">
+      <AppHeader
+        showBrand={screen === "home"}
+        title={screen !== "home" ? screenTitles[screen] : undefined}
+      />
+
       {screen === "home" && (
         <HomeScreen state={state} onStart={() => setScreen("setup")} />
       )}

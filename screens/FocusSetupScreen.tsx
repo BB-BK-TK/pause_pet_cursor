@@ -1,3 +1,4 @@
+import AppShell from "@/components/AppShell";
 import DurationChips from "@/components/DurationChips";
 import PageHeader from "@/components/PageHeader";
 import PrimaryButton from "@/components/PrimaryButton";
@@ -22,42 +23,50 @@ export default function FocusSetupScreen({
   onBack,
   onStart,
 }: FocusSetupScreenProps) {
+  const petMood = selected ? "waiting" : "idle";
+  const petLine = selected ? COPY.setup.petReady : COPY.setup.petPick;
+
   return (
-    <div className="flex flex-col gap-7">
-      <button
-        type="button"
-        onClick={onBack}
-        className="inline-flex w-fit items-center gap-1 rounded-full bg-white/70 px-3 py-1.5 text-sm font-medium text-stone-600 shadow-sm transition hover:bg-white hover:text-stone-800"
-      >
-        {COPY.setup.back}
-      </button>
+    <AppShell
+      footer={
+        <PrimaryButton onClick={onStart} disabled={selected === null}>
+          {COPY.setup.cta}
+        </PrimaryButton>
+      }
+    >
+      <div className="flex flex-col gap-5 pb-2">
+        <button
+          type="button"
+          onClick={onBack}
+          className="inline-flex w-fit items-center rounded-full bg-white/80 px-3 py-1.5 text-sm font-medium text-stone-600 shadow-sm"
+        >
+          {COPY.setup.back}
+        </button>
 
-      <PageHeader
-        title={COPY.setup.title}
-        subtitle={COPY.setup.subtitle}
-        align="left"
-        compact
-      />
-
-      <SoftCard variant="highlight" className="py-8">
-        <PetDisplay
-          mood="idle"
-          petLevel={state.petLevel}
-          petExp={state.petExp}
-          size="lg"
+        <PageHeader
+          title={COPY.setup.title}
+          subtitle={COPY.setup.subtitle}
+          align="left"
+          compact
         />
-      </SoftCard>
 
-      <SoftCard className="!p-5">
-        <p className="mb-4 text-center text-xs font-semibold uppercase tracking-wider text-stone-500">
-          집중 시간
-        </p>
-        <DurationChips selected={selected} onSelect={onSelect} />
-      </SoftCard>
+        <SoftCard variant="highlight" className="py-6">
+          <PetDisplay
+            mood={petMood}
+            petLevel={state.petLevel}
+            petExp={state.petExp}
+            size="lg"
+          />
+          <p className="pet-speech mt-4">{petLine}</p>
+        </SoftCard>
 
-      <PrimaryButton onClick={onStart} disabled={selected === null}>
-        {COPY.setup.cta}
-      </PrimaryButton>
-    </div>
+        <SoftCard className="!p-4">
+          <p className="mb-3 text-center text-xs font-semibold uppercase tracking-wider text-stone-500">
+            집중 시간
+          </p>
+          <DurationChips selected={selected} onSelect={onSelect} />
+        </SoftCard>
+      </div>
+    </AppShell>
   );
 }

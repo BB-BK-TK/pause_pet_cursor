@@ -5,27 +5,63 @@
 @layer base {
   :root {
     --color-cream: #fff9f0;
-    --color-peach: #ffedd5;
-    --color-warm: #fbbf24;
-    --color-ink: #44403c;
-    --color-muted: #78716c;
+    --app-max-width: 28rem;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
+    --footer-height: 5.5rem;
+  }
+
+  html {
+    height: 100%;
+    height: 100dvh;
+    overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
   }
 
   body {
-    @apply text-stone-800;
+    @apply overflow-hidden text-stone-800;
+    height: 100%;
+    height: 100dvh;
     background: linear-gradient(
       165deg,
       var(--color-cream) 0%,
       #fff7ed 45%,
       #fef3c7 100%
     );
-    background-attachment: fixed;
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
   }
 }
 
 @layer components {
-  .app-shell {
-    @apply mx-auto w-full max-w-md px-4 pb-10 pt-6 sm:px-5;
+  /* Full-viewport app frame (PWA-like) */
+  .app-frame {
+    @apply relative mx-auto flex h-[100dvh] w-full max-w-md flex-col overflow-hidden;
+    padding-top: var(--safe-top);
+    padding-left: max(1rem, var(--safe-left));
+    padding-right: max(1rem, var(--safe-right));
+    padding-bottom: var(--safe-bottom);
+  }
+
+  .app-header {
+    @apply shrink-0 pb-3 pt-1;
+  }
+
+  .app-scroll {
+    @apply min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.5rem;
+  }
+
+  .app-footer {
+    @apply shrink-0 border-t border-amber-100/60 bg-gradient-to-t from-[#fff9f0] via-[#fff9f0]/95 to-transparent pt-3;
+    padding-bottom: max(0.75rem, var(--safe-bottom));
+  }
+
+  .app-footer-stack {
+    @apply flex flex-col gap-2.5;
   }
 
   .soft-card {
@@ -37,15 +73,23 @@
   }
 
   .soft-card-calm {
-    @apply soft-card border-stone-100 bg-gradient-to-b from-stone-50/90 to-white;
+    @apply soft-card border-violet-100/50 bg-gradient-to-b from-violet-50/40 via-white to-stone-50/80;
   }
 
   .soft-card-celebrate {
-    @apply soft-card border-amber-200/80 bg-gradient-to-b from-amber-50 via-white to-orange-50/40 shadow-[0_16px_48px_rgba(251,191,36,0.2)];
+    @apply soft-card border-amber-200/80 bg-gradient-to-b from-amber-50 via-white to-orange-50/40 shadow-[0_16px_48px_rgba(251,191,36,0.22)];
+  }
+
+  .pet-speech {
+    @apply rounded-2xl bg-white/90 px-4 py-2.5 text-center text-sm leading-relaxed text-stone-600 shadow-sm;
+  }
+
+  .loop-hint {
+    @apply rounded-full bg-amber-100/70 px-3 py-1 text-center text-xs font-medium text-amber-900/80;
   }
 
   .timer-display {
-    @apply font-mono text-[4.5rem] font-bold leading-none tracking-tight text-stone-900 sm:text-8xl;
+    @apply font-mono text-[3.25rem] font-bold leading-none tracking-tight text-stone-900 sm:text-[4.25rem];
     font-variant-numeric: tabular-nums;
   }
 
@@ -58,11 +102,35 @@
   }
 
   .pet-cushion {
-    @apply relative flex items-center justify-center rounded-[2rem] border border-amber-100/80 bg-gradient-to-b from-amber-50 to-orange-50/80 shadow-inner;
+    @apply relative flex items-center justify-center rounded-[2rem] border shadow-inner transition-colors duration-500;
+  }
+
+  .pet-cushion-idle {
+    @apply border-amber-100/80 bg-gradient-to-b from-amber-50 to-orange-50/80;
+  }
+
+  .pet-cushion-waiting {
+    @apply border-orange-200/80 bg-gradient-to-b from-orange-50 to-amber-100/90;
+  }
+
+  .pet-cushion-focusing {
+    @apply border-amber-300/90 bg-gradient-to-b from-amber-100 to-orange-100 ring-2 ring-amber-300/40;
+  }
+
+  .pet-cushion-happy {
+    @apply border-amber-300 bg-gradient-to-b from-amber-100 via-yellow-50 to-orange-50 ring-2 ring-amber-400/50;
+  }
+
+  .pet-cushion-comfort {
+    @apply border-stone-200/80 bg-gradient-to-b from-stone-100 to-violet-50/60;
   }
 
   .pet-ear {
-    @apply absolute top-2 h-5 w-5 rounded-full bg-amber-200/90;
+    @apply absolute top-2 h-5 w-5 rounded-full;
+  }
+
+  .pet-mood-badge {
+    @apply inline-block rounded-full px-3 py-1 text-xs font-semibold;
   }
 
   .progress-track {
@@ -71,6 +139,10 @@
 
   .progress-fill {
     @apply h-full rounded-full bg-gradient-to-r from-amber-300 to-amber-500 transition-all duration-500 ease-out;
+  }
+
+  .celebrate-sparkle {
+    @apply pointer-events-none absolute h-2 w-2 rounded-full bg-amber-400/70;
   }
 }
 
@@ -83,8 +155,16 @@
     animation: soft-pulse 2.5s ease-in-out infinite;
   }
 
+  .animate-focus-glow {
+    animation: focus-glow 2s ease-in-out infinite;
+  }
+
   .animate-fade-up {
     animation: fade-up 0.45s ease-out both;
+  }
+
+  .animate-pop {
+    animation: pop 0.5s ease-out both;
   }
 }
 
@@ -105,8 +185,18 @@
     transform: scale(1);
   }
   50% {
-    opacity: 0.85;
-    transform: scale(1.05);
+    opacity: 0.9;
+    transform: scale(1.06);
+  }
+}
+
+@keyframes focus-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 24px 4px rgba(251, 191, 36, 0.35);
   }
 }
 
@@ -118,5 +208,19 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  70% {
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
   }
 }
