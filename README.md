@@ -86,7 +86,16 @@ npm start
 npm run lint
 ```
 
-**Deploy:** Works on [Vercel](https://vercel.com) with default Next.js settings (`npm run build`, no env vars).
+**Deploy (Vercel):** [github.com/BB-BK-TK/pause_pet_cursor](https://github.com/BB-BK-TK/pause_pet_cursor)
+
+1. Import the repo in Vercel → **Framework Preset: Next.js**
+2. **Production Branch:** `main` (code lives on `main` and `master`)
+3. **Build Command:** `npm run build` (default)
+4. **Output Directory:** leave empty (do not set `out` or `.next`)
+5. **Environment variables:** none
+6. Redeploy after pushing to `main`
+
+If you see `404: NOT_FOUND`, the deployment is usually on the wrong branch or Output Directory was set incorrectly in Vercel project settings.
 
 Test on a phone or narrow browser (~390px width) for the intended experience.
 
