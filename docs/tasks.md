@@ -370,17 +370,84 @@ Production-ready prototype.
 
 ---
 
-# Phase 2+ placeholders (not implemented)
+# Phase 2 — Web / PWA (not implemented)
 
-Per PRD §20 — **no native blocking in web MVP**:
+Per PRD §20 — **no Android permissions in web app**:
 
 - [ ] **Browser notification** after pause completion (e.g. “5분, 잘 넘겼어요”)
 - [ ] **PWA install prompt** on repeat visits (Add to Home Screen)
-- [ ] **Native app detection / blocking** (OS-level or companion app)
 - [ ] Change target app / zodiac in settings without full reset
-
-Implement only when added to PRD and platform strategy is chosen.
 
 ---
 
-*Tasks aligned with P1: target app + zodiac companion onboarding + short app-reduction pause loop.*
+# Phase 3+ — Android native (not implemented)
+
+Per PRD **§21**. Web prototype uses **intervention simulation** (`screens/InterventionScreen.tsx`) — not real app detection.
+
+**Native roadmap (when Android app ships):**
+
+- [ ] **Detect target app open** with Usage Access → trigger same intervention UX as web simulation
+- [ ] **Show intervention natively** (full-screen layer over distracting app)
+- [ ] **Notify after allowed-use timer ends** (Notification permission)
+- [ ] **Lock Mode later** — Accessibility permission for strongest block (see §21)
+
+Source of truth for permission copy: `lib/nativePermissions.ts`. Placeholder UI: `screens/FutureProtectionScreen.tsx`.
+
+## Protection modes (product)
+
+| Mode | Permissions |
+|------|-------------|
+| **Soft Pause** | None (manual pause — current web P1) |
+| **Detect Mode** | Usage Access, Notification, Battery optimization exclusion |
+| **Lock Mode** | Above + Accessibility Service (+ optional Overlay) |
+
+## Recommended native implementation phases
+
+### Phase 3A — Android shell + Soft Pause
+
+- [ ] New Android project (Kotlin); no Usage Access yet
+- [ ] Port onboarding: target app → zodiac → reveal
+- [ ] Manual 5-min pause timer + zodiac copy (parity with web)
+- [ ] localStorage-equivalent on-device storage
+
+### Phase 3B — Detect Mode
+
+- [ ] Usage Access permission flow + Korean copy from PRD §21.3.1
+- [ ] Background service: detect opens of selected packages
+- [ ] Gentle notification / in-app nudge when target app used
+- [ ] Notification permission + pause-complete alerts (§21.3.2)
+- [ ] Battery optimization exclusion prompt (§21.3.3)
+- [ ] Onboarding step: choose **Detect** + permission setup
+
+### Phase 3C — Lock Mode
+
+- [ ] Accessibility Service (Lock Mode only) with clear consent UI (§21.3.4)
+- [ ] Foreground app detection → Pause Pet intervention activity
+- [ ] Optional: Overlay permission for full-screen pause (§21.3.5)
+- [ ] Onboarding step: choose **Lock** + staged permission setup
+- [ ] Audit: Accessibility used only for user-selected apps / focus protection
+
+### Phase 3D — Polish
+
+- [ ] Permission re-check on upgrade / revoke
+- [ ] Settings: change protection level and target apps
+- [ ] Align intervention copy with `lib/zodiac.ts` per sign
+
+## Android onboarding (future)
+
+1. Target app selection  
+2. Zodiac companion  
+3. **Protection level** (Soft / Detect / Lock)  
+4. **Permission setup** (only what the level needs)  
+
+## Web placeholder (done in repo)
+
+- [x] `lib/nativePermissions.ts` — modes, permissions, Korean copy
+- [x] `FutureProtectionScreen` — read-only explainer from Home
+- [x] PRD §21 — full permission model
+
+Do **not** add Android dependencies or Gradle modules to the Next.js repo until Phase 3A starts in a separate project.
+
+---
+
+*Tasks aligned with P1 web + §21 Android native roadmap (docs + UI placeholders only).*

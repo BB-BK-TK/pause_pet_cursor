@@ -27,6 +27,8 @@ The user selects a target app to use less, meets their zodiac companion during o
 
 Phase 1 (P1) is a **web prototype** (Next.js PWA-friendly). There is **no real app blocking**, no accounts, and no backend.
 
+**Long-term:** a native **Android** companion that can detect or block user-selected apps and show the zodiac pause intervention (see **§21**). The web app documents this future model only; it does not request OS permissions.
+
 ---
 
 ## 2. MVP promise
@@ -462,16 +464,133 @@ pause-pet/
 
 ---
 
-## 20. Future phases (reference only — do not implement)
+## 20. Future phases (summary)
 
-- **Browser notification** after pause completion
-- **PWA install prompt** on repeat visits
-- **Native app detection / blocking** (OS-level or companion app)
-- Native iOS/Android shells
-- Accounts and cloud sync
-- More pet animations (beyond emoji/CSS)
-- Social sharing of streaks
+| Phase | Platform | Scope |
+|-------|----------|--------|
+| **P1 (current)** | Web / PWA | Target app + zodiac onboarding + manual 5-min **Soft Pause** |
+| **P2** | Web polish | PWA install prompt, browser notification after pause |
+| **P3+** | **Android native** | Detect / Lock modes, permissions, foreground intervention |
+
+Detail: **§21 Android native permission model**. Do not implement native code in the Next.js repo until a dedicated Android project exists.
 
 ---
 
-*Last updated: P1 app-reduction companion with target app + zodiac onboarding.*
+## 21. Android native permission model (future — not in web app)
+
+### 21.1 Product vision
+
+Pause Pet should eventually become a **real Android focus-lock companion**. The user selects distracting apps; when they try to open those apps, their **zodiac companion** asks them to pause for 5 minutes (or the configured duration).
+
+The current Next.js app is a **web/PWA prototype**. It must **not** request Android permissions. Use `lib/nativePermissions.ts` and the **Future Protection** UI screen as placeholders only.
+
+### 21.2 Protection modes
+
+| Mode | ID | Platform | Behavior |
+|------|-----|----------|----------|
+| **Soft Pause** | `softPause` | Web + Android | No native blocking. User manually starts a 5-minute pause. **Current P1.** |
+| **Detect Mode** | `detect` | Android only | Usage Access detects selected app opens/usage → gentle reminder to pause with zodiac companion. |
+| **Lock Mode** | `lock` | Android only | Strongest protection: intervention UI when selected apps are opened. Requires Accessibility + battery exclusion. |
+
+### 21.3 Permissions (Android)
+
+#### 1. Usage Access / App Usage Permission
+
+**Purpose**
+
+- Detect when the user opens or uses selected distracting apps.
+- Measure target app usage time.
+- Trigger Pause Pet intervention.
+
+**Required for:** Detect Mode, Lock Mode.
+
+**Korean copy (onboarding):**
+
+> 앱을 열고 싶어지는 순간을 알아차리려면 앱 사용 권한이 필요해요. 사용 기록은 기기 안에서만 확인돼요.
+
+#### 2. Notification Permission
+
+**Purpose**
+
+- Notify user when 5-minute pause is complete.
+- Send gentle return reminders.
+
+**Required for:** Detect Mode, Lock Mode.
+
+**Korean copy:**
+
+> 5분이 지나면 별자리 친구가 조용히 알려줄게요.
+
+#### 3. Battery Optimization Exclusion
+
+**Purpose**
+
+- Keep the background detection service alive.
+- Prevent Android from killing the focus monitoring service.
+
+**Required for:** Detect Mode, Lock Mode.
+
+**Korean copy:**
+
+> 별자리 친구가 중간에 잠들지 않도록 배터리 최적화에서 제외해주세요.
+
+#### 4. Accessibility Service Permission
+
+**Purpose**
+
+- Stronger intervention mode (Lock Mode only).
+- Detect foreground app and show Pause Pet intervention.
+- Optionally guide the user back from the distracting app.
+
+**Sensitivity**
+
+- High-friction, sensitive permission.
+- **Only request for Lock Mode**, never for Soft Pause or Detect-only flows.
+- Explain clearly: used only for focus protection on user-selected apps.
+- Must not be used for unrelated automation or data collection.
+
+**Required for:** Lock Mode.
+
+**Korean copy:**
+
+> 더 확실히 막고 싶다면 접근성 권한이 필요해요. 선택한 앱을 열 때 별자리 친구가 바로 멈춤 화면을 보여줄 수 있어요.
+
+#### 5. Overlay Permission (optional)
+
+**Purpose**
+
+- Show a blocking/pause screen over selected apps if needed.
+
+**Notes**
+
+- Optional and high-friction.
+- Not required for MVP Android; evaluate after Accessibility-based intervention.
+
+**Korean copy:**
+
+> 선택한 앱 위에 멈춤 화면을 띄우려면 다른 앱 위에 표시 권한이 필요해요. (선택 사항)
+
+### 21.4 Onboarding roadmap
+
+**Current P1 (web)**
+
+1. Target app selection  
+2. Zodiac companion (sign or birthday)  
+3. Companion reveal → 5-minute **Soft Pause** on Home  
+
+**Future Android onboarding**
+
+1. Target app selection (same intent)  
+2. Zodiac companion (same intent)  
+3. **Choose protection level** — Soft Pause / Detect / Lock (explain tradeoffs)  
+4. **Permission setup** — step through only permissions required for chosen mode  
+5. Home with mode-appropriate CTAs  
+
+### 21.5 Web placeholder UI
+
+- Home → **Android 보호 기능 미리보기 (준비 중)** → `FutureProtectionScreen`
+- Lists modes, permissions, and onboarding roadmap; no system permission dialogs.
+
+---
+
+*Last updated: P1 web prototype + §21 Android native permission spec (docs + placeholders).*

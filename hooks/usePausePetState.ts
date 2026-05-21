@@ -2,12 +2,15 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  completeFocusSession,
   createDefaultState,
   loadPausePetState,
+  recordAllowed,
+  recordExtended,
+  recordPrevented,
+  recordReturned,
   savePausePetState,
   type PausePetState,
-  type SessionCompletionResult,
+  type PreventedResult,
 } from "@/lib/storage";
 
 export function usePausePetState() {
@@ -30,9 +33,13 @@ export function usePausePetState() {
     }
   }, [state, hydrated]);
 
-  const recordCompletion = useCallback(
-    (durationMinutes: number): SessionCompletionResult => {
-      const result = completeFocusSession(stateRef.current, durationMinutes);
+  const applyPrevented = useCallback(
+    (targetAppName: string, savedMinutes: number): PreventedResult => {
+      const result = recordPrevented(
+        stateRef.current,
+        targetAppName,
+        savedMinutes,
+      );
       stateRef.current = result.state;
       setState(result.state);
       return result;
@@ -40,9 +47,39 @@ export function usePausePetState() {
     [],
   );
 
+  const applyAllowed = useCallback(
+    (targetAppName: string, minutes: number): PausePetState => {
+      const next = recordAllowed(stateRef.current, targetAppName, minutes);
+      stateRef.current = next;
+      setState(next);
+      return next;
+    },
+    [],
+  );
+
+  const applyReturned = useCallback((targetAppName: string): PausePetState => {
+    const next = recordReturned(stateRef.current, targetAppName);
+    stateRef.current = next;
+    setState(next);
+    return next;
+  }, []);
+
+  const applyExtended = useCallback(
+    (targetAppName: string, minutes: number): PausePetState => {
+      const next = recordExtended(stateRef.current, targetAppName, minutes);
+      stateRef.current = next;
+      setState(next);
+      return next;
+    },
+    [],
+  );
+
   return {
     state,
     hydrated,
-    recordCompletion,
+    applyPrevented,
+    applyAllowed,
+    applyReturned,
+    applyExtended,
   };
 }

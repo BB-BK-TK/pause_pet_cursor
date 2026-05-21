@@ -1,16 +1,18 @@
-export type FocusDurationMinutes = 5 | 10 | 15 | 25;
+export type AllowedDurationMinutes = 5 | 10 | 15 | 30;
 
 export type ScreenName =
   | "onboardingAppSelect"
   | "onboardingZodiac"
   | "onboardingReveal"
-  | "home"
-  | "setup"
-  | "active"
-  | "giveUpConfirm"
-  | "success";
+  | "intervention"
+  | "preventedSuccess"
+  | "allowedDuration"
+  | "allowedTimer"
+  | "returnReminder"
+  | "summary"
+  | "futureProtection";
 
-/** Pet emotional state across onboarding and pause loop */
+/** Pet emotional state across intervention flow */
 export type PetMood =
   | "curious"
   | "waiting"

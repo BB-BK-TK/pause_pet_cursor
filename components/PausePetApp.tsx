@@ -6,24 +6,25 @@ import PetDisplay from "@/components/PetDisplay";
 import { usePausePetState } from "@/hooks/usePausePetState";
 import { useUserSettings } from "@/hooks/useUserSettings";
 import { CUSTOM_APP_OPTION } from "@/lib/apps";
-import { DEFAULT_PAUSE_MINUTES } from "@/lib/constants";
+import { DEFAULT_PAUSE_MINUTES, EXTEND_MINUTES } from "@/lib/constants";
 import { COPY } from "@/lib/copy";
-import type { FocusDurationMinutes, ScreenName } from "@/lib/types";
+import type { AllowedDurationMinutes, ScreenName } from "@/lib/types";
 import type { ZodiacSign } from "@/lib/zodiac";
-import HomeScreen from "@/screens/HomeScreen";
-import FocusSetupScreen from "@/screens/FocusSetupScreen";
-import ActiveSessionScreen from "@/screens/ActiveSessionScreen";
-import GiveUpConfirmScreen from "@/screens/GiveUpConfirmScreen";
-import SuccessScreen from "@/screens/SuccessScreen";
+import InterventionScreen from "@/screens/InterventionScreen";
+import PreventedSuccessScreen from "@/screens/PreventedSuccessScreen";
+import AllowedDurationScreen from "@/screens/AllowedDurationScreen";
+import AllowedTimerScreen from "@/screens/AllowedTimerScreen";
+import ReturnReminderScreen from "@/screens/ReturnReminderScreen";
+import SummaryScreen from "@/screens/SummaryScreen";
 import OnboardingAppSelectScreen from "@/screens/onboarding/OnboardingAppSelectScreen";
 import OnboardingZodiacScreen from "@/screens/onboarding/OnboardingZodiacScreen";
 import OnboardingRevealScreen from "@/screens/onboarding/OnboardingRevealScreen";
+import FutureProtectionScreen from "@/screens/FutureProtectionScreen";
+import { FUTURE_UI_COPY } from "@/lib/nativePermissions";
 
 const screenTitles: Partial<Record<ScreenName, string>> = {
-  setup: "멈춤 준비",
-  active: "멈춤 중",
-  giveUpConfirm: "잠깐 쉬어가기",
-  success: "잘 넘겼어요",
+  summary: COPY.summary.title,
+  futureProtection: FUTURE_UI_COPY.screenTitle,
 };
 
 function resolveTargetAppName(
@@ -40,7 +41,14 @@ function resolveTargetAppName(
 }
 
 export default function PausePetApp() {
-  const { state, hydrated: stateHydrated, recordCompletion } = usePausePetState();
+  const {
+    state,
+    hydrated: stateHydrated,
+    applyPrevented,
+    applyAllowed,
+    applyReturned,
+    applyExtended,
+  } = usePausePetState();
   const {
     settings,
     hydrated: settingsHydrated,
@@ -56,7 +64,7 @@ export default function PausePetApp() {
     if (settingsHydrated && !didInitialRoute.current) {
       didInitialRoute.current = true;
       setScreen(
-        settings.hasCompletedOnboarding ? "home" : "onboardingAppSelect",
+        settings.hasCompletedOnboarding ? "intervention" : "onboardingAppSelect",
       );
     }
   }, [settingsHydrated, settings.hasCompletedOnboarding]);
@@ -74,46 +82,48 @@ export default function PausePetApp() {
     day?: number;
   }>({});
 
-  const [selectedDuration, setSelectedDuration] =
-    useState<FocusDurationMinutes | null>(null);
+  const [allowedMinutes, setAllowedMinutes] =
+    useState<AllowedDurationMinutes | null>(null);
   const [endsAt, setEndsAt] = useState<string | null>(null);
   const [lastExpGained, setLastExpGained] = useState(0);
-  const [lastDuration, setLastDuration] = useState<FocusDurationMinutes>(
-    DEFAULT_PAUSE_MINUTES,
-  );
-  const completingRef = useRef(false);
+  const timerCompleteRef = useRef(false);
 
-  const startSession = useCallback((duration: FocusDurationMinutes) => {
-    const end = new Date(Date.now() + duration * 60 * 1000).toISOString();
-    setSelectedDuration(duration);
-    setLastDuration(duration);
+  const goToIntervention = useCallback(() => {
+    setAllowedMinutes(null);
+    setEndsAt(null);
+    timerCompleteRef.current = false;
+    setScreen("intervention");
+  }, []);
+
+  const startAllowedTimer = useCallback((minutes: AllowedDurationMinutes) => {
+    const end = new Date(Date.now() + minutes * 60 * 1000).toISOString();
+    setAllowedMinutes(minutes);
     setEndsAt(end);
-    completingRef.current = false;
-    setScreen("active");
+    timerCompleteRef.current = false;
+    setScreen("allowedTimer");
   }, []);
 
   const handleTimerComplete = useCallback(() => {
-    if (completingRef.current || !selectedDuration) {
+    if (timerCompleteRef.current) {
       return;
     }
-    completingRef.current = true;
-
-    const { expGained } = recordCompletion(selectedDuration);
-    setLastExpGained(expGained);
+    timerCompleteRef.current = true;
     setEndsAt(null);
-    setScreen("success");
-  }, [selectedDuration, recordCompletion]);
-
-  const resetSession = useCallback(() => {
-    setEndsAt(null);
-    setSelectedDuration(null);
-    completingRef.current = false;
+    setScreen("returnReminder");
   }, []);
 
   const onboardingTargetName = useMemo(
     () => resolveTargetAppName(onboardingSelectedApp, onboardingCustomName),
     [onboardingSelectedApp, onboardingCustomName],
   );
+
+  const interventionScreens: ScreenName[] = [
+    "intervention",
+    "preventedSuccess",
+    "allowedDuration",
+    "allowedTimer",
+    "returnReminder",
+  ];
 
   if (!hydrated) {
     return (
@@ -132,16 +142,18 @@ export default function PausePetApp() {
   }
 
   const showHeader =
-    screen !== "onboardingAppSelect" &&
-    screen !== "onboardingZodiac" &&
-    screen !== "onboardingReveal";
+    screen === "summary" || screen === "futureProtection";
+
+  const useInterventionFrame = interventionScreens.includes(screen);
 
   return (
-    <main className="app-frame animate-fade-up">
+    <main
+      className={`app-frame animate-fade-up ${useInterventionFrame ? "app-frame-intervention" : ""}`}
+    >
       {showHeader && (
         <AppHeader
-          showBrand={screen === "home"}
-          title={screen !== "home" ? screenTitles[screen] : undefined}
+          showBrand={screen === "summary"}
+          title={screen !== "summary" ? screenTitles[screen] : undefined}
         />
       )}
 
@@ -180,78 +192,88 @@ export default function PausePetApp() {
               birthdayMonth: pendingBirthday.month,
               birthdayDay: pendingBirthday.day,
             });
-            setScreen("home");
+            goToIntervention();
           }}
         />
       )}
 
-      {screen === "home" && settings.hasCompletedOnboarding && (
-        <HomeScreen
+      {screen === "intervention" && settings.hasCompletedOnboarding && (
+        <InterventionScreen
           state={state}
           settings={settings}
-          onQuickPause={() => startSession(settings.defaultPauseMinutes)}
-          onChooseDuration={() => {
-            setSelectedDuration(settings.defaultPauseMinutes);
-            setScreen("setup");
+          onNotOpen={() => {
+            const { expGained } = applyPrevented(
+              settings.targetAppName,
+              settings.defaultPauseMinutes,
+            );
+            setLastExpGained(expGained);
+            setScreen("preventedSuccess");
           }}
+          onWillOpen={() => setScreen("allowedDuration")}
         />
       )}
 
-      {screen === "setup" && (
-        <FocusSetupScreen
+      {screen === "preventedSuccess" && (
+        <PreventedSuccessScreen
           state={state}
           settings={settings}
-          selected={selectedDuration}
-          onSelect={setSelectedDuration}
-          onBack={() => {
-            setSelectedDuration(null);
-            setScreen("home");
-          }}
-          onStart={() => {
-            if (selectedDuration) {
-              startSession(selectedDuration);
-            }
+          expGained={lastExpGained}
+          onSummary={() => setScreen("summary")}
+          onRetry={goToIntervention}
+        />
+      )}
+
+      {screen === "allowedDuration" && (
+        <AllowedDurationScreen
+          state={state}
+          settings={settings}
+          onConfirm={(minutes) => {
+            applyAllowed(settings.targetAppName, minutes);
+            startAllowedTimer(minutes);
           }}
         />
       )}
 
-      {screen === "active" && endsAt && selectedDuration && (
-        <ActiveSessionScreen
+      {screen === "allowedTimer" && endsAt && (
+        <AllowedTimerScreen
           state={state}
           settings={settings}
           endsAt={endsAt}
-          onGiveUp={() => setScreen("giveUpConfirm")}
+          onLeaveEarly={() => {
+            applyReturned(settings.targetAppName);
+            setEndsAt(null);
+            goToIntervention();
+          }}
           onComplete={handleTimerComplete}
         />
       )}
 
-      {screen === "giveUpConfirm" && (
-        <GiveUpConfirmScreen
+      {screen === "returnReminder" && (
+        <ReturnReminderScreen
           state={state}
           settings={settings}
-          onContinue={() => setScreen("active")}
-          onEnd={() => {
-            resetSession();
-            setScreen("home");
+          onReturn={() => {
+            applyReturned(settings.targetAppName);
+            goToIntervention();
+          }}
+          onExtend={() => {
+            applyExtended(settings.targetAppName, EXTEND_MINUTES);
+            startAllowedTimer(EXTEND_MINUTES);
           }}
         />
       )}
 
-      {screen === "success" && (
-        <SuccessScreen
+      {screen === "summary" && (
+        <SummaryScreen
           state={state}
           settings={settings}
-          expGained={lastExpGained}
-          durationMinutes={lastDuration}
-          onContinue={() => {
-            resetSession();
-            startSession(lastDuration);
-          }}
-          onDone={() => {
-            resetSession();
-            setScreen("home");
-          }}
+          onSimulate={goToIntervention}
+          onFutureProtection={() => setScreen("futureProtection")}
         />
+      )}
+
+      {screen === "futureProtection" && (
+        <FutureProtectionScreen onBack={() => setScreen("summary")} />
       )}
     </main>
   );

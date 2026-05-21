@@ -1,4 +1,4 @@
-import type { FocusDurationMinutes } from "./types";
+import type { AllowedDurationMinutes } from "./types";
 import { isZodiacSign, type ZodiacSign } from "./zodiac";
 
 export const SETTINGS_STORAGE_KEY = "pause-pet-settings";
@@ -6,7 +6,7 @@ export const SETTINGS_STORAGE_KEY = "pause-pet-settings";
 export type UserSettings = {
   hasCompletedOnboarding: boolean;
   targetAppName: string;
-  defaultPauseMinutes: FocusDurationMinutes;
+  defaultPauseMinutes: AllowedDurationMinutes;
   zodiacSign: ZodiacSign;
   birthdayMonth?: number;
   birthdayDay?: number;
@@ -15,7 +15,7 @@ export type UserSettings = {
 export type OnboardingCompletePayload = {
   targetAppName: string;
   zodiacSign: ZodiacSign;
-  defaultPauseMinutes?: FocusDurationMinutes;
+  defaultPauseMinutes?: AllowedDurationMinutes;
   birthdayMonth?: number;
   birthdayDay?: number;
 };
@@ -29,10 +29,10 @@ export function createDefaultSettings(): UserSettings {
   };
 }
 
-const VALID_DURATIONS = new Set<FocusDurationMinutes>([5, 10, 15, 25]);
+const VALID_DURATIONS = new Set<AllowedDurationMinutes>([5, 10, 15, 30]);
 
-function isValidDuration(value: number): value is FocusDurationMinutes {
-  return VALID_DURATIONS.has(value as FocusDurationMinutes);
+function isValidDuration(value: number): value is AllowedDurationMinutes {
+  return VALID_DURATIONS.has(value as AllowedDurationMinutes);
 }
 
 function normalizeSettings(raw: unknown): UserSettings {

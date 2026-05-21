@@ -1,14 +1,13 @@
-/** Korean UI copy — zodiac companion app-reduction tone */
+/** Korean UI copy — intervention companion tone */
 
 import type { PetMood } from "./types";
 
 export const COPY = {
   app: {
     name: "Pause Pet",
-    tagline: "앱을 열기 전, 별자리 친구와 잠깐 멈춰볼까요?",
     loading: "잠깐만요, 별자리 친구를 불러오고 있어요…",
     metaDescription:
-      "딴짓 앱을 열고 싶을 때, 별자리 친구가 잠깐 곁에서 기다려주는 멈춤 동반자",
+      "딴짓 앱을 열기 전, 별자리 친구가 잠깐 물어봐 주는 멈춤 동반자",
   },
 
   onboarding: {
@@ -40,72 +39,65 @@ export const COPY = {
     },
   },
 
-  home: {
-    companionWaiting: (zodiacName: string) => `${zodiacName} 친구가 기다리고 있어요.`,
-    prompt: (appName: string, minutes: number) =>
-      `${appName} 열기 전, ${minutes}분만 같이 있어볼까요?`,
-    targetBadge: (appName: string) => `지금 줄이는 앱 · ${appName}`,
-    loopHint: "멈추기 → 별자리 친구와 함께 → 충동 지나가기",
-    ctaPause: (minutes: number) => `별자리 친구와 ${minutes}분 멈추기`,
-    ctaOtherDuration: "다른 시간으로 멈추기",
-    statMinutes: "함께 멈춘 시간",
-    statSessions: "멈춤 횟수",
-    statStreak: "연속 일수",
-    historyTitle: "최근 같이 넘긴 순간",
-    historyEmpty: "아직 기록이 없어요. 별자리 친구가 첫 멈춤을 기다리고 있어요.",
-    sessionLine: (minutes: number, appName: string) =>
-      `${appName} 대신 ${minutes}분, 같이 있었어요`,
-    growthPoints: (points: number) => `+${points} 성장`,
+  intervention: {
+    opening: (appName: string) => `${appName}를 열려고 했어요`,
+    askWait: "잠깐만요. 별자리 친구가 먼저 물어볼게요.",
+    askOpen: "지금 정말 열까요?",
+    notOpen: "안 열래요",
+    willOpen: "열래요",
   },
 
-  setup: {
-    back: "← 홈",
-    title: "얼마나 같이 멈출까요?",
-    subtitle: (appName: string) =>
-      `${appName}을(를) 열기 전, 별자리 친구와 잠깐 쉬는 시간이에요.`,
-    petReady: "좋아, 나 옆에 있을게. 같이 버텨보자!",
-    petPick: "시간만 정해주면, 내가 기다릴게.",
-    durationLabel: "멈춤 시간",
-    cta: "이제 별자리 친구와 멈추기",
-  },
-
-  focus: {
-    label: "지금 멈춤 중",
-    headline: (appName: string, zodiacName: string) =>
-      `지금은 ${appName} 대신, ${zodiacName} 친구와 잠깐 쉬는 시간이에요.`,
-    exit: "잠깐 쉬어볼게요",
-  },
-
-  giveUp: {
-    title: "괜찮아요. 오늘은 여기까지 해도 돼요.",
-    body: "별자리 친구는 언제든 다시 옆에 있을게요.",
-    continue: "조금만 더 같이 있어볼게요",
-    end: "오늘은 여기까지",
-  },
-
-  success: {
+  prevented: {
     title: "잘 넘겼어요.",
-    body: (appName: string, minutes: number) =>
-      `방금 ${appName}을(를) 열고 싶은 마음을 ${minutes}분 동안 같이 지나보냈어요.`,
+    body: (appName: string) =>
+      `방금 ${appName}를 열고 싶은 마음을 한 번 지나보냈어요.`,
     growth: (zodiacName: string) => `${zodiacName} 친구가 조금 더 가까워졌어요.`,
     growthPoints: (points: number) => `+${points} 성장`,
-    ctaContinue: "조금 더 이어가기",
-    ctaDone: "오늘은 여기까지",
-    statStreak: "함께한 날",
-    statStreakValue: (days: number) => `${days}일`,
-    statMinutes: "모은 시간",
-    statMinutesValue: (minutes: number) => `${minutes}분`,
+    statToday: "오늘 멈춘 횟수",
+    statSaved: "아낀 시간",
+    statGrowth: "펫 성장",
+    ctaSummary: "오늘 요약 보기",
+    ctaRetry: "다시 테스트하기",
+  },
+
+  allowed: {
+    title: "좋아요. 그럼 몇 분만 볼까요?",
+    subtitle: "시간이 지나면 별자리 친구가 조용히 알려줄게요.",
+    cta: "이 시간만 보고 올게요",
+    watching: (appName: string) => `${appName} 보는 중`,
+    timerHint: "정한 시간이 지나면 친구가 알려줄게요.",
+    leaveEarly: "지금 돌아갈래요",
+  },
+
+  returnReminder: {
+    title: "돌아올 시간이에요.",
+    body: (appName: string) => `${appName} 보기로 한 시간이 지났어요.`,
+    companion: (zodiacName: string) => `${zodiacName} 친구가 기다리고 있어요.`,
+    goBack: "돌아갈게요",
+    extend: "5분만 더",
+  },
+
+  summary: {
+    title: "오늘 요약",
+    todayPrevented: "오늘 멈춘 횟수",
+    savedMinutes: "아낀 시간",
+    totalPrevented: "총 멈춘 횟수",
+    petLevel: "펫 레벨",
+    recentTitle: "최근 기록",
+    recentEmpty: "아직 기록이 없어요.",
+    simulate: "앱 열기 시뮬레이션",
+    futureLink: "Android 보호 기능 (준비 중)",
   },
 
   pet: {
     level: (n: number) => `Lv.${n}`,
-    growth: (points: number) => `${points} 성장`,
+    growth: (points: number) => `${points} EXP`,
     mood: (mood: PetMood): string => {
       const labels: Record<PetMood, string> = {
-        curious: "호기심 가득",
+        curious: "물어보는 중",
         waiting: "곁에서 기다리는 중",
-        sitting: "옆에 앉아 있는 중",
-        proud: "자랑스러워하고 있어요",
+        sitting: "함께 있는 중",
+        proud: "기뻐하고 있어요",
         comforting: "포근히 위로하는 중",
       };
       return labels[mood];
