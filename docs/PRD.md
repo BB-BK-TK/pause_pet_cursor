@@ -19,20 +19,22 @@ Related: `/AGENTS.md` (repo-level coding rules).
 
 ## 1. Product summary
 
-**Pause Pet** is a **Korean, mobile-first focus timer** where a cute pet **emotionally supports** the user during focus sessions.
+**Pause Pet** is a **Korean, mobile-first app-reduction companion**. Before opening a distracting app, the user pauses for a short time with a **zodiac companion pet** that waits beside them.
 
-The user picks a focus duration, starts a timer, and stays with a pet that is “waiting together” until the session ends. Completing a session rewards the pet with EXP and updates local progress (streak, total minutes, completed sessions).
+The user selects a target app to use less, meets their zodiac companion during onboarding (by sign or birthday), then starts short pause sessions (default 5 minutes). Completing a pause rewards the pet with EXP and updates local progress (streak, total minutes, completed sessions).
 
-Phase 1 is a **web prototype** (Next.js PWA-friendly). There is **no real app blocking**, no accounts, and no backend.
+**Zodiac is character matching and UX personalization only** — not fortune-telling or daily horoscopes.
+
+Phase 1 (P1) is a **web prototype** (Next.js PWA-friendly). There is **no real app blocking**, no accounts, and no backend.
 
 ---
 
 ## 2. MVP promise
 
-> **집중하는 동안 혼자가 아니라, 작은 펫이 같이 기다려준다.**
+> **앱을 열기 전, 별자리 친구가 잠깐 옆에서 기다려준다.**
 
 English (internal reference only):  
-*While you focus, you are not alone—a small pet waits with you.*
+*Before you open the app, your zodiac companion waits with you for a short pause.*
 
 ---
 
@@ -99,18 +101,19 @@ Positioning phrase:
 
 ---
 
-## 7. Phase 1 goal
+## 7. Phase 1 goal (P1)
 
 Ship a **working, deployable** mobile web experience where a user can:
 
-1. Choose a focus duration.
-2. Start a session and see the pet waiting.
-3. Complete the session and earn EXP.
-4. See streak, total focus minutes, and completed session count.
-5. Give up mid-session with **gentle** copy (no shame).
-6. Return later with progress still saved (`localStorage`).
+1. Complete onboarding: **target app** + **zodiac companion** (sign or birthday).
+2. See personalized home copy for their app and zodiac friend.
+3. Start a short pause (default 5 min) before opening the target app.
+4. Complete the pause and earn EXP with zodiac-specific encouragement.
+5. See streak, total pause minutes, and session count.
+6. Give up mid-session with **gentle** zodiac comfort copy (no shame).
+7. Return later with settings and progress saved (`localStorage`).
 
-Success = users say the pet makes focus feel **warmer and easier to continue**, not more stressful.
+Success = users feel a **personal companion** helps them pause before distracting apps, without guilt or astrology overload.
 
 ---
 
@@ -142,15 +145,18 @@ Success = users say the pet makes focus feel **warmer and easier to continue**, 
 
 | # | Feature | Requirement |
 |---|---------|-------------|
-| 1 | **Select focus duration** | Preset chips (e.g. 15 / 25 / 45 / 60 min); one tap to choose |
-| 2 | **Start timer** | Starts countdown for selected duration |
-| 3 | **Pet waiting during focus** | Dedicated focus UI; pet + supportive Korean copy; minimal distractions |
-| 4 | **Complete session** | When timer hits 0: celebration UI, grant EXP, update stats |
-| 5 | **Save local progress** | All state in `localStorage`; survives refresh |
-| 6 | **Pet EXP** | EXP increases on successful completion; optional simple level display |
-| 7 | **Stats** | Streak (days), total focus minutes, completed session count |
-| 8 | **Give-up flow** | User can exit early; gentle copy; no EXP for incomplete session (or reduced—see rules) |
-| 9 | **Korean UX copy** | All user-facing strings in natural Korean |
+| 1 | **Onboarding — target app** | User picks app to use less (presets + custom name) |
+| 2 | **Onboarding — zodiac companion** | Select sign **or** enter birthday → computed sign |
+| 3 | **Onboarding — reveal** | Show companion personality + pause intention (not fortune content) |
+| 4 | **Select pause duration** | Preset chips: 5 / 10 / 15 / 25 min (default 5) |
+| 5 | **Start timer** | Countdown for selected duration |
+| 6 | **Zodiac pet during pause** | Companion emoji + sign-specific Korean messages on home / active / success / give-up |
+| 7 | **Complete session** | Celebration UI, grant EXP, update stats |
+| 8 | **Save local progress** | `pause-pet-state` + `pause-pet-settings` in `localStorage` |
+| 9 | **Pet EXP** | EXP on successful completion; simple level display |
+| 10 | **Stats** | Streak, total pause minutes, session count |
+| 11 | **Give-up flow** | Gentle zodiac comfort copy; no EXP for incomplete session |
+| 12 | **Korean UX copy** | Warm companion tone; not an astrology app |
 
 ---
 
@@ -163,7 +169,7 @@ Success = users say the pet makes focus feel **warmer and easier to continue**, 
 - Payments
 - Social / community
 - AI personalization
-- Push notifications
+- Push notifications (see **Phase 2+ roadmap**)
 - Real-time sync across devices
 - Leaderboards
 - Complex pet customization shop
@@ -175,12 +181,13 @@ Success = users say the pet makes focus feel **warmer and easier to continue**, 
 
 ### 11.1 First visit (happy path)
 
-1. User opens app → **Home** (집중 시작 화면).
-2. User selects duration (e.g. 25분).
-3. User taps **집중 시작**.
-4. **Focus screen**: large timer, pet “waiting” animation/state, calm copy.
-5. Timer reaches 0 → **Complete screen**: praise, EXP gained, stats updated.
-6. User taps **홈으로** → Home shows updated streak / minutes / sessions.
+1. User opens app → **Target app selection** onboarding.
+2. **Zodiac setup** — select sign or enter birthday.
+3. **Companion reveal** — personality + “5분만 같이 있어줄게요” for chosen app.
+4. **Home** — zodiac friend waiting + **별자리 친구와 5분 멈추기**.
+5. **Active pause** — timer + zodiac-specific focus message.
+6. Timer reaches 0 → **Success** — urge passed, companion grew closer, EXP.
+7. User continues or returns home; stats persisted.
 
 ### 11.2 Returning user
 
@@ -350,42 +357,28 @@ Adjust constants in `lib/constants.ts` only.
 
 ## 15. Data model (`localStorage`)
 
-Storage key: `pause-pet-state` (may migrate schema—version field recommended).
+### 15.1 Progress — `pause-pet-state`
+
+Session history, pet EXP/level, streak, total pause minutes. See `lib/storage.ts`.
+
+### 15.2 User settings — `pause-pet-settings`
 
 ```ts
-export type ScreenName =
-  | "onboarding"
-  | "home"
-  | "focus"
-  | "complete"
-  | "giveUp";
+export type ZodiacSign =
+  | "aries" | "taurus" | "gemini" | "cancer" | "leo" | "virgo"
+  | "libra" | "scorpio" | "sagittarius" | "capricorn" | "aquarius" | "pisces";
 
-export type FocusDurationMinutes = 15 | 25 | 45 | 60;
-
-export type PetData = {
-  name: string;
-  exp: number;
-  level: number; // derived on save or computed in UI
-};
-
-export type SessionInProgress = {
-  durationMinutes: FocusDurationMinutes;
-  startedAt: string; // ISO timestamp
-  endsAt: string; // ISO timestamp
-} | null;
-
-export type AppState = {
-  version: 1;
-  onboardingCompleted: boolean;
-  pet: PetData;
-  completedSessions: number;
-  totalFocusMinutes: number;
-  streakDays: number;
-  lastCompletedDate: string | null; // YYYY-MM-DD
-  lastActiveDate: string; // YYYY-MM-DD
-  sessionInProgress: SessionInProgress;
+export type UserSettings = {
+  hasCompletedOnboarding: boolean;
+  targetAppName: string;
+  defaultPauseMinutes: 5 | 10 | 15 | 25;
+  zodiacSign: ZodiacSign;
+  birthdayMonth?: number;
+  birthdayDay?: number;
 };
 ```
+
+Zodiac companion copy and emoji: `lib/zodiac.ts` (personality + per-screen messages; not daily fortunes).
 
 Default state: see `/docs/DEV_NOTES.md`.
 
@@ -471,13 +464,14 @@ pause-pet/
 
 ## 20. Future phases (reference only — do not implement)
 
-- Real app blocking / intent interception
-- Native apps
+- **Browser notification** after pause completion
+- **PWA install prompt** on repeat visits
+- **Native app detection / blocking** (OS-level or companion app)
+- Native iOS/Android shells
 - Accounts and cloud sync
-- Push reminders
-- More pet animations and items
+- More pet animations (beyond emoji/CSS)
 - Social sharing of streaks
 
 ---
 
-*Last updated: Phase 1 focus-timer MVP direction.*
+*Last updated: P1 app-reduction companion with target app + zodiac onboarding.*

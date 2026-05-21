@@ -16,7 +16,7 @@ export default function DurationChips({ selected, onSelect }: DurationChipsProps
             key={minutes}
             type="button"
             onClick={() => onSelect(minutes)}
-            className={`rounded-2xl border-2 px-4 py-5 text-center transition focus:outline-none focus:ring-2 focus:ring-amber-300 focus:ring-offset-2 ${
+            className={`rounded-2xl border-2 px-4 py-4 text-center transition focus:outline-none focus:ring-2 focus:ring-amber-300 focus:ring-offset-2 ${
               isSelected
                 ? "border-amber-400 bg-gradient-to-b from-amber-50 to-amber-100/90 text-amber-950 shadow-md shadow-amber-200/50"
                 : "border-transparent bg-white/80 text-stone-700 shadow-sm hover:border-amber-200 hover:bg-amber-50/50"

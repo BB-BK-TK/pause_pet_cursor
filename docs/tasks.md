@@ -33,14 +33,15 @@ Output: changed files + how to test.
 
 ## Current repo status (baseline)
 
-Already exists from scaffold:
+Implemented in repo:
 
-- Next.js App Router + TypeScript + Tailwind
-- `app/page.tsx`, `app/layout.tsx`, `app/globals.css`
-- `components/PausePetApp.tsx` — **placeholder** (English copy, simple pause counter — **replace** per PRD)
-- `lib/types.ts`, `lib/storage.ts` — **legacy schema** — migrate to `AppState` in PRD
+- Next.js App Router + TypeScript + Tailwind, mobile-first `AppShell`
+- **P1 onboarding:** target app selection → zodiac setup (sign or birthday) → companion reveal
+- **Pause loop:** home quick pause → active timer → success / gentle give-up
+- `lib/storage.ts` (`pause-pet-state`), `lib/settings.ts` (`pause-pet-settings`), `lib/zodiac.ts`
+- Zodiac companion messages on home, active, success, give-up (character matching only — not fortunes)
 
-Tasks below assume migration from placeholder → focus timer MVP.
+Tasks below may be historical; prefer PRD P1 scope when in doubt.
 
 ---
 
@@ -360,18 +361,26 @@ Production-ready prototype.
 
 ---
 
-# Suggested next work (after Phase 1 docs)
-
-Per prior conversation, **not** in Phase 1 unless PRD updated:
+# Suggested next work (after Phase 1)
 
 - Reset pet / data button in settings
+- Change target app after onboarding (settings screen)
 - Partial session credit
 - Share card for streak
-- Custom durations
-- PWA install prompt
-
-Implement only when added to PRD.
 
 ---
 
-*Tasks aligned with focus-timer MVP — not legacy app-blocking prototype.*
+# Phase 2+ placeholders (not implemented)
+
+Per PRD §20 — **no native blocking in web MVP**:
+
+- [ ] **Browser notification** after pause completion (e.g. “5분, 잘 넘겼어요”)
+- [ ] **PWA install prompt** on repeat visits (Add to Home Screen)
+- [ ] **Native app detection / blocking** (OS-level or companion app)
+- [ ] Change target app / zodiac in settings without full reset
+
+Implement only when added to PRD and platform strategy is chosen.
+
+---
+
+*Tasks aligned with P1: target app + zodiac companion onboarding + short app-reduction pause loop.*

@@ -6,42 +6,69 @@ import StatChip from "@/components/StatChip";
 import { COPY } from "@/lib/copy";
 import { formatSessionTime } from "@/lib/date";
 import { expForDuration, type PausePetState } from "@/lib/storage";
+import type { UserSettings } from "@/lib/settings";
+import { getZodiacCompanion } from "@/lib/zodiac";
 
 type HomeScreenProps = {
   state: PausePetState;
-  onStart: () => void;
+  settings: UserSettings;
+  onQuickPause: () => void;
+  onChooseDuration: () => void;
 };
 
-export default function HomeScreen({ state, onStart }: HomeScreenProps) {
+export default function HomeScreen({
+  state,
+  settings,
+  onQuickPause,
+  onChooseDuration,
+}: HomeScreenProps) {
   const recent = state.completedSessions.slice(0, 5);
-  const statusText =
-    state.completedSessions.length === 0
-      ? COPY.home.statusFirst
-      : COPY.home.statusReturning;
+  const { targetAppName, defaultPauseMinutes, zodiacSign } = settings;
+  const companion = getZodiacCompanion(zodiacSign);
 
   return (
     <AppShell
       footer={
-        <PrimaryButton onClick={onStart}>{COPY.home.ctaStart}</PrimaryButton>
+        <>
+          <PrimaryButton onClick={onQuickPause}>
+            {COPY.home.ctaPause(defaultPauseMinutes)}
+          </PrimaryButton>
+          <button
+            type="button"
+            onClick={onChooseDuration}
+            className="w-full py-2 text-center text-sm font-medium text-stone-500 underline-offset-2 hover:text-stone-700 hover:underline"
+          >
+            {COPY.home.ctaOtherDuration}
+          </button>
+        </>
       }
     >
-      <div className="flex flex-col gap-5 pb-2">
+      <div className="screen-stack">
         <p className="text-center text-sm leading-relaxed text-stone-600">
           {COPY.app.tagline}
         </p>
         <p className="loop-hint">{COPY.home.loopHint}</p>
 
-        <SoftCard variant="highlight" className="px-5 py-6">
-          <p className="mb-4 text-center text-sm font-medium text-stone-700">
-            {statusText}
+        <SoftCard variant="highlight" className="px-4 py-5">
+          <div className="mb-3 flex justify-center">
+            <span className="target-app-badge">
+              {COPY.home.targetBadge(targetAppName)}
+            </span>
+          </div>
+          <p className="mb-1 text-center text-base font-bold leading-snug text-stone-900">
+            {COPY.home.companionWaiting(companion.koreanName)}
+          </p>
+          <p className="mb-3 text-center text-sm leading-relaxed text-stone-700">
+            {COPY.home.prompt(targetAppName, defaultPauseMinutes)}
           </p>
           <PetDisplay
-            mood="idle"
+            mood="waiting"
             petLevel={state.petLevel}
             petExp={state.petExp}
             size="lg"
+            companionEmoji={companion.emoji}
           />
-          <p className="pet-speech mt-4">{COPY.home.petWhisper}</p>
+          <p className="pet-speech mt-3">{companion.homeMessage}</p>
         </SoftCard>
 
         <div className="flex gap-2">
@@ -61,18 +88,21 @@ export default function HomeScreen({ state, onStart }: HomeScreenProps) {
             {COPY.home.historyTitle}
           </h2>
           {recent.length === 0 ? (
-            <p className="mt-3 text-sm leading-relaxed text-stone-500">
+            <p className="mt-2 text-sm leading-relaxed text-stone-500">
               {COPY.home.historyEmpty}
             </p>
           ) : (
-            <ul className="mt-3 space-y-2">
+            <ul className="mt-2 space-y-2">
               {recent.map((session) => (
                 <li
                   key={session.id}
-                  className="rounded-2xl bg-amber-50/80 px-3 py-2.5 text-sm"
+                  className="rounded-2xl bg-amber-50/80 px-3 py-2 text-sm"
                 >
                   <span className="font-semibold text-stone-800">
-                    {COPY.home.sessionLine(session.durationMinutes)}
+                    {COPY.home.sessionLine(
+                      session.durationMinutes,
+                      targetAppName,
+                    )}
                   </span>
                   <span className="mt-0.5 block text-xs text-stone-500">
                     {COPY.home.growthPoints(
@@ -89,3 +119,4 @@ export default function HomeScreen({ state, onStart }: HomeScreenProps) {
     </AppShell>
   );
 }
+

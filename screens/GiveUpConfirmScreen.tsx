@@ -5,18 +5,24 @@ import PetDisplay from "@/components/PetDisplay";
 import SoftCard from "@/components/SoftCard";
 import { COPY } from "@/lib/copy";
 import type { PausePetState } from "@/lib/storage";
+import type { UserSettings } from "@/lib/settings";
+import { getZodiacCompanion } from "@/lib/zodiac";
 
 type GiveUpConfirmScreenProps = {
   state: PausePetState;
+  settings: UserSettings;
   onContinue: () => void;
   onEnd: () => void;
 };
 
 export default function GiveUpConfirmScreen({
   state,
+  settings,
   onContinue,
   onEnd,
 }: GiveUpConfirmScreenProps) {
+  const companion = getZodiacCompanion(settings.zodiacSign);
+
   return (
     <AppShell
       footer={
@@ -30,28 +36,26 @@ export default function GiveUpConfirmScreen({
         </>
       }
     >
-      <div className="flex flex-col gap-4 pb-2">
-        <SoftCard variant="calm" className="flex flex-col items-center px-5 py-8">
+      <div className="screen-stack">
+        <SoftCard variant="calm" className="flex flex-col items-center px-4 py-6">
           <PetDisplay
-            mood="comfort"
+            mood="comforting"
             petLevel={state.petLevel}
             petExp={state.petExp}
             size="hero"
             showProgress={false}
+            companionEmoji={companion.emoji}
           />
 
-          <div className="mt-6 w-full">
+          <div className="mt-4 w-full">
             <PageHeader
               title={COPY.giveUp.title}
               subtitle={COPY.giveUp.body}
               align="center"
               compact
             />
-            <p className="mt-3 text-center text-sm leading-relaxed text-stone-500">
-              {COPY.giveUp.hint}
-            </p>
             <p className="pet-speech mx-auto mt-4 max-w-[16rem]">
-              {COPY.giveUp.petLine}
+              {companion.giveUpComfortMessage}
             </p>
           </div>
         </SoftCard>

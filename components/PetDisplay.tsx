@@ -13,15 +13,15 @@ type MoodVisual = {
 };
 
 const moodConfig: Record<PetMood, MoodVisual> = {
-  idle: {
-    emoji: "\u{1F431}",
-    halo: "bg-amber-200/60",
-    cushion: "pet-cushion-idle",
-    ear: "bg-amber-200/90",
+  curious: {
+    emoji: "\u{1F63C}",
+    halo: "bg-sky-200/60",
+    cushion: "pet-cushion-curious",
+    ear: "bg-sky-200/90",
     float: true,
-    pulse: false,
+    pulse: true,
     focusGlow: false,
-    badge: "bg-amber-100 text-amber-800",
+    badge: "bg-sky-100 text-sky-900",
   },
   waiting: {
     emoji: "\u{1F440}",
@@ -33,30 +33,30 @@ const moodConfig: Record<PetMood, MoodVisual> = {
     focusGlow: false,
     badge: "bg-orange-100 text-orange-900",
   },
-  focusing: {
-    emoji: "??",
+  sitting: {
+    emoji: "\u{1F60C}",
     halo: "bg-amber-300/80",
-    cushion: "pet-cushion-focusing",
+    cushion: "pet-cushion-sitting",
     ear: "bg-amber-300/90",
     float: true,
     pulse: true,
     focusGlow: true,
     badge: "bg-amber-200 text-amber-900",
   },
-  happy: {
+  proud: {
     emoji: "\u{1F31F}",
     halo: "bg-yellow-300/80",
-    cushion: "pet-cushion-happy",
+    cushion: "pet-cushion-proud",
     ear: "bg-amber-300/90",
     float: false,
     pulse: false,
     focusGlow: false,
     badge: "bg-yellow-100 text-amber-900",
   },
-  comfort: {
+  comforting: {
     emoji: "\u{1F49C}",
     halo: "bg-violet-200/50",
-    cushion: "pet-cushion-comfort",
+    cushion: "pet-cushion-comforting",
     ear: "bg-stone-200/90",
     float: false,
     pulse: false,
@@ -73,6 +73,8 @@ type PetDisplayProps = {
   size?: "md" | "lg" | "hero";
   showProgress?: boolean;
   showMoodLabel?: boolean;
+  /** Zodiac companion emoji overrides default mood emoji */
+  companionEmoji?: string;
 };
 
 export default function PetDisplay({
@@ -83,21 +85,23 @@ export default function PetDisplay({
   size = "md",
   showProgress = true,
   showMoodLabel = true,
+  companionEmoji,
 }: PetDisplayProps) {
   const visual = moodConfig[mood];
+  const displayEmoji = companionEmoji ?? visual.emoji;
   const expInLevel = petExp % expPerLevel;
   const progress = Math.min(100, (expInLevel / expPerLevel) * 100);
 
   const stageSize = {
-    md: "h-[9.5rem] w-[9.5rem]",
-    lg: "h-[11.5rem] w-[11.5rem]",
-    hero: "h-[12.5rem] w-[12.5rem]",
+    md: "h-[8.5rem] w-[8.5rem]",
+    lg: "h-[10rem] w-[10rem]",
+    hero: "h-[11rem] w-[11rem] sm:h-[12rem] sm:w-[12rem]",
   }[size];
 
   const cushionSize = {
-    md: "h-28 w-28 text-6xl",
-    lg: "h-32 w-32 text-7xl",
-    hero: "h-32 w-32 text-7xl sm:h-36 sm:w-36 sm:text-7xl",
+    md: "h-24 w-24 text-5xl",
+    lg: "h-28 w-28 text-6xl",
+    hero: "h-28 w-28 text-6xl sm:h-32 sm:w-32 sm:text-7xl",
   }[size];
 
   const animClass = [
@@ -108,7 +112,7 @@ export default function PetDisplay({
     .join(" ");
 
   return (
-    <div className="flex flex-col items-center gap-3">
+    <div className="flex flex-col items-center gap-2.5">
       {showMoodLabel && (
         <span className={`pet-mood-badge ${visual.badge}`}>
           {COPY.pet.mood(mood)}
@@ -130,9 +134,9 @@ export default function PetDisplay({
             aria-hidden
           />
           <span className="relative z-10 select-none" aria-hidden>
-            {visual.emoji}
+            {displayEmoji}
           </span>
-          {mood === "happy" && (
+          {mood === "proud" && (
             <>
               <span
                 className="celebrate-sparkle -right-1 top-0 animate-soft-pulse"
@@ -145,7 +149,7 @@ export default function PetDisplay({
               />
             </>
           )}
-          {mood === "focusing" && (
+          {mood === "sitting" && (
             <span
               className="absolute -bottom-1 left-1/2 flex -translate-x-1/2 gap-1"
               aria-hidden
@@ -173,10 +177,10 @@ export default function PetDisplay({
           <p className="text-sm font-semibold text-amber-900/90">
             {COPY.pet.level(petLevel)}
           </p>
-          <div className="progress-track mx-auto mt-2.5">
+          <div className="progress-track mx-auto mt-2">
             <div className="progress-fill" style={{ width: `${progress}%` }} />
           </div>
-          <p className="mt-2 text-xs text-stone-500">{COPY.pet.growth(petExp)}</p>
+          <p className="mt-1.5 text-xs text-stone-500">{COPY.pet.growth(petExp)}</p>
         </div>
       )}
     </div>

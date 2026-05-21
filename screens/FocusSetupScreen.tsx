@@ -6,10 +6,13 @@ import PetDisplay from "@/components/PetDisplay";
 import SoftCard from "@/components/SoftCard";
 import { COPY } from "@/lib/copy";
 import type { PausePetState } from "@/lib/storage";
+import type { UserSettings } from "@/lib/settings";
 import type { FocusDurationMinutes } from "@/lib/types";
+import { getZodiacCompanion } from "@/lib/zodiac";
 
 type FocusSetupScreenProps = {
   state: PausePetState;
+  settings: UserSettings;
   selected: FocusDurationMinutes | null;
   onSelect: (minutes: FocusDurationMinutes) => void;
   onBack: () => void;
@@ -18,12 +21,13 @@ type FocusSetupScreenProps = {
 
 export default function FocusSetupScreen({
   state,
+  settings,
   selected,
   onSelect,
   onBack,
   onStart,
 }: FocusSetupScreenProps) {
-  const petMood = selected ? "waiting" : "idle";
+  const companion = getZodiacCompanion(settings.zodiacSign);
   const petLine = selected ? COPY.setup.petReady : COPY.setup.petPick;
 
   return (
@@ -34,7 +38,7 @@ export default function FocusSetupScreen({
         </PrimaryButton>
       }
     >
-      <div className="flex flex-col gap-5 pb-2">
+      <div className="screen-stack">
         <button
           type="button"
           onClick={onBack}
@@ -45,24 +49,25 @@ export default function FocusSetupScreen({
 
         <PageHeader
           title={COPY.setup.title}
-          subtitle={COPY.setup.subtitle}
+          subtitle={COPY.setup.subtitle(settings.targetAppName)}
           align="left"
           compact
         />
 
-        <SoftCard variant="highlight" className="py-6">
+        <SoftCard variant="highlight" className="py-4">
           <PetDisplay
-            mood={petMood}
+            mood="waiting"
             petLevel={state.petLevel}
             petExp={state.petExp}
             size="lg"
+            companionEmoji={companion.emoji}
           />
-          <p className="pet-speech mt-4">{petLine}</p>
+          <p className="pet-speech mt-3">{petLine}</p>
         </SoftCard>
 
         <SoftCard className="!p-4">
-          <p className="mb-3 text-center text-xs font-semibold uppercase tracking-wider text-stone-500">
-            집중 시간
+          <p className="mb-2 text-center text-xs font-semibold uppercase tracking-wider text-stone-500">
+            {COPY.setup.durationLabel}
           </p>
           <DurationChips selected={selected} onSelect={onSelect} />
         </SoftCard>

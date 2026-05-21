@@ -1,16 +1,21 @@
-export type FocusDurationMinutes = 5 | 15 | 25 | 45;
+export type FocusDurationMinutes = 5 | 10 | 15 | 25;
 
 export type ScreenName =
+  | "onboardingAppSelect"
+  | "onboardingZodiac"
+  | "onboardingReveal"
   | "home"
   | "setup"
   | "active"
   | "giveUpConfirm"
   | "success";
 
-/** Pet emotional state across the focus loop */
+/** Pet emotional state across onboarding and pause loop */
 export type PetMood =
-  | "idle"
+  | "curious"
   | "waiting"
-  | "focusing"
-  | "happy"
-  | "comfort";
+  | "sitting"
+  | "proud"
+  | "comforting";
+
+export type { ZodiacSign } from "./zodiac";

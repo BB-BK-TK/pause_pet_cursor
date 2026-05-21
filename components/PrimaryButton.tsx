@@ -29,7 +29,7 @@ export default function PrimaryButton({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`w-full rounded-2xl px-6 py-4 text-base font-semibold transition focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-45 disabled:shadow-none ${variants[variant]}`}
+      className={`w-full rounded-2xl px-6 py-3.5 text-base font-semibold transition focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-45 disabled:shadow-none ${variants[variant]}`}
     >
       {children}
     </button>

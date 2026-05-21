@@ -1,6 +1,5 @@
 "use client";
 
-import { useMemo } from "react";
 import AppShell from "@/components/AppShell";
 import PrimaryButton from "@/components/PrimaryButton";
 import PetDisplay from "@/components/PetDisplay";
@@ -8,28 +7,27 @@ import SoftCard from "@/components/SoftCard";
 import { COPY } from "@/lib/copy";
 import { useFocusTimer } from "@/hooks/useFocusTimer";
 import type { PausePetState } from "@/lib/storage";
+import type { UserSettings } from "@/lib/settings";
+import { getZodiacCompanion } from "@/lib/zodiac";
 
 type ActiveSessionScreenProps = {
   state: PausePetState;
+  settings: UserSettings;
   endsAt: string;
-  durationMinutes: number;
   onGiveUp: () => void;
   onComplete: () => void;
 };
 
 export default function ActiveSessionScreen({
   state,
+  settings,
   endsAt,
-  durationMinutes,
   onGiveUp,
   onComplete,
 }: ActiveSessionScreenProps) {
   const { display } = useFocusTimer(endsAt, onComplete);
-
-  const message = useMemo(
-    () => COPY.focusMessages[durationMinutes % COPY.focusMessages.length],
-    [durationMinutes],
-  );
+  const companion = getZodiacCompanion(settings.zodiacSign);
+  const { targetAppName } = settings;
 
   return (
     <AppShell
@@ -39,26 +37,33 @@ export default function ActiveSessionScreen({
         </PrimaryButton>
       }
     >
-      <div className="flex flex-col gap-4 pb-2">
-        <SoftCard variant="highlight" className="flex flex-col items-center px-4 py-8">
+      <div className="screen-stack">
+        <SoftCard variant="highlight" className="flex flex-col items-center px-4 py-6">
           <span className="rounded-full bg-amber-200/90 px-4 py-1.5 text-xs font-semibold text-amber-900">
             {COPY.focus.label}
           </span>
 
-          <p className="timer-display mt-6" aria-live="polite">
+          <p className="mt-4 text-center text-sm font-medium leading-relaxed text-stone-700">
+            {COPY.focus.headline(targetAppName, companion.koreanName)}
+          </p>
+
+          <p className="timer-display mt-4" aria-live="polite">
             {display}
           </p>
 
-          <p className="pet-speech mt-6 max-w-[18rem]">{message}</p>
+          <p className="pet-speech mt-4 max-w-[18rem]">
+            {companion.activeFocusMessage}
+          </p>
         </SoftCard>
 
-        <div className="flex justify-center py-2">
+        <div className="flex justify-center py-1">
           <PetDisplay
-            mood="focusing"
+            mood="sitting"
             petLevel={state.petLevel}
             petExp={state.petExp}
             size="hero"
             showProgress={false}
+            companionEmoji={companion.emoji}
           />
         </div>
       </div>
