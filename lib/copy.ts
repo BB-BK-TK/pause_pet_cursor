@@ -1,6 +1,4 @@
-/** Korean UI copy — intervention companion tone */
-
-import type { PetMood } from "./types";
+/** Korean UI copy — intervention-first companion tone */
 
 export const COPY = {
   app: {
@@ -43,8 +41,8 @@ export const COPY = {
     opening: (appName: string) => `${appName}를 열려고 했어요`,
     askWait: "잠깐만요. 별자리 친구가 먼저 물어볼게요.",
     askOpen: "지금 정말 열까요?",
-    notOpen: "안 열래요",
-    willOpen: "열래요",
+    notOpen: "지금은 안 열래요",
+    willOpen: "조금만 볼래요",
   },
 
   prevented: {
@@ -52,7 +50,6 @@ export const COPY = {
     body: (appName: string) =>
       `방금 ${appName}를 열고 싶은 마음을 한 번 지나보냈어요.`,
     growth: (zodiacName: string) => `${zodiacName} 친구가 조금 더 가까워졌어요.`,
-    growthPoints: (points: number) => `+${points} 성장`,
     statToday: "오늘 멈춘 횟수",
     statSaved: "아낀 시간",
     statGrowth: "펫 성장",
@@ -65,8 +62,14 @@ export const COPY = {
     subtitle: "시간이 지나면 별자리 친구가 조용히 알려줄게요.",
     cta: "이 시간만 보고 올게요",
     watching: (appName: string) => `${appName} 보는 중`,
-    timerHint: "정한 시간이 지나면 친구가 알려줄게요.",
+    timerHint: "정한 시간이 지나면 별자리 친구가 알려줄게요.",
     leaveEarly: "지금 돌아갈래요",
+  },
+
+  returned: {
+    title: "잘 돌아왔어요.",
+    body: (appName: string) => `${appName}에서 빠르게 돌아왔어요.`,
+    cta: "다시 테스트하기",
   },
 
   returnReminder: {
@@ -79,28 +82,21 @@ export const COPY = {
 
   summary: {
     title: "오늘 요약",
+    targetApp: "줄이고 싶은 앱",
+    companion: "별자리 친구",
     todayPrevented: "오늘 멈춘 횟수",
     savedMinutes: "아낀 시간",
     totalPrevented: "총 멈춘 횟수",
     petLevel: "펫 레벨",
+    petExp: "펫 경험치",
     recentTitle: "최근 기록",
     recentEmpty: "아직 기록이 없어요.",
-    simulate: "앱 열기 시뮬레이션",
-    futureLink: "Android 보호 기능 (준비 중)",
+    simulate: "다시 열기 시뮬레이션",
+    resetOnboarding: "처음부터 설정하기",
   },
 
   pet: {
     level: (n: number) => `Lv.${n}`,
     growth: (points: number) => `${points} EXP`,
-    mood: (mood: PetMood): string => {
-      const labels: Record<PetMood, string> = {
-        curious: "물어보는 중",
-        waiting: "곁에서 기다리는 중",
-        sitting: "함께 있는 중",
-        proud: "기뻐하고 있어요",
-        comforting: "포근히 위로하는 중",
-      };
-      return labels[mood];
-    },
   },
 } as const;

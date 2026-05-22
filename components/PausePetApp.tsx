@@ -1,8 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import AppHeader from "@/components/AppHeader";
-import PetDisplay from "@/components/PetDisplay";
+import ZodiacPet from "@/components/ZodiacPet";
 import { usePausePetState } from "@/hooks/usePausePetState";
 import { useUserSettings } from "@/hooks/useUserSettings";
 import { CUSTOM_APP_OPTION } from "@/lib/apps";
@@ -14,18 +13,12 @@ import InterventionScreen from "@/screens/InterventionScreen";
 import PreventedSuccessScreen from "@/screens/PreventedSuccessScreen";
 import AllowedDurationScreen from "@/screens/AllowedDurationScreen";
 import AllowedTimerScreen from "@/screens/AllowedTimerScreen";
+import ReturnedSuccessScreen from "@/screens/ReturnedSuccessScreen";
 import ReturnReminderScreen from "@/screens/ReturnReminderScreen";
 import SummaryScreen from "@/screens/SummaryScreen";
 import OnboardingAppSelectScreen from "@/screens/onboarding/OnboardingAppSelectScreen";
 import OnboardingZodiacScreen from "@/screens/onboarding/OnboardingZodiacScreen";
 import OnboardingRevealScreen from "@/screens/onboarding/OnboardingRevealScreen";
-import FutureProtectionScreen from "@/screens/FutureProtectionScreen";
-import { FUTURE_UI_COPY } from "@/lib/nativePermissions";
-
-const screenTitles: Partial<Record<ScreenName, string>> = {
-  summary: COPY.summary.title,
-  futureProtection: FUTURE_UI_COPY.screenTitle,
-};
 
 function resolveTargetAppName(
   selectedApp: string | null,
@@ -48,26 +41,31 @@ export default function PausePetApp() {
     applyAllowed,
     applyReturned,
     applyExtended,
+    reloadFromStorage,
   } = usePausePetState();
   const {
     settings,
     hydrated: settingsHydrated,
     finishOnboarding,
+    clearOnboarding,
   } = useUserSettings();
+
+  const needsOnboarding =
+    !settings.hasCompletedOnboarding || !settings.targetAppName.trim();
 
   const hydrated = stateHydrated && settingsHydrated;
 
   const [screen, setScreen] = useState<ScreenName>("onboardingAppSelect");
+  const [routeReady, setRouteReady] = useState(false);
 
   const didInitialRoute = useRef(false);
   useEffect(() => {
     if (settingsHydrated && !didInitialRoute.current) {
       didInitialRoute.current = true;
-      setScreen(
-        settings.hasCompletedOnboarding ? "intervention" : "onboardingAppSelect",
-      );
+      setScreen(needsOnboarding ? "onboardingAppSelect" : "intervention");
+      setRouteReady(true);
     }
-  }, [settingsHydrated, settings.hasCompletedOnboarding]);
+  }, [settingsHydrated, needsOnboarding]);
 
   const [onboardingSelectedApp, setOnboardingSelectedApp] = useState<
     string | null
@@ -82,14 +80,10 @@ export default function PausePetApp() {
     day?: number;
   }>({});
 
-  const [allowedMinutes, setAllowedMinutes] =
-    useState<AllowedDurationMinutes | null>(null);
   const [endsAt, setEndsAt] = useState<string | null>(null);
-  const [lastExpGained, setLastExpGained] = useState(0);
   const timerCompleteRef = useRef(false);
 
   const goToIntervention = useCallback(() => {
-    setAllowedMinutes(null);
     setEndsAt(null);
     timerCompleteRef.current = false;
     setScreen("intervention");
@@ -97,7 +91,6 @@ export default function PausePetApp() {
 
   const startAllowedTimer = useCallback((minutes: AllowedDurationMinutes) => {
     const end = new Date(Date.now() + minutes * 60 * 1000).toISOString();
-    setAllowedMinutes(minutes);
     setEndsAt(end);
     timerCompleteRef.current = false;
     setScreen("allowedTimer");
@@ -122,27 +115,20 @@ export default function PausePetApp() {
     "preventedSuccess",
     "allowedDuration",
     "allowedTimer",
+    "returnedSuccess",
     "returnReminder",
   ];
 
-  if (!hydrated) {
+  if (!hydrated || !routeReady) {
     return (
       <main className="app-frame">
-        <div className="flex flex-1 flex-col items-center justify-center">
-          <PetDisplay
-            mood="curious"
-            petLevel={1}
-            petExp={0}
-            showProgress={false}
-          />
-          <p className="mt-4 text-sm text-stone-500">{COPY.app.loading}</p>
+        <div className="flex flex-1 flex-col items-center justify-center gap-4">
+          <ZodiacPet zodiacSign="gemini" mood="idle" size="md" />
+          <p className="text-sm text-stone-500">{COPY.app.loading}</p>
         </div>
       </main>
     );
   }
-
-  const showHeader =
-    screen === "summary" || screen === "futureProtection";
 
   const useInterventionFrame = interventionScreens.includes(screen);
 
@@ -150,12 +136,6 @@ export default function PausePetApp() {
     <main
       className={`app-frame animate-fade-up ${useInterventionFrame ? "app-frame-intervention" : ""}`}
     >
-      {showHeader && (
-        <AppHeader
-          showBrand={screen === "summary"}
-          title={screen !== "summary" ? screenTitles[screen] : undefined}
-        />
-      )}
 
       {screen === "onboardingAppSelect" && (
         <OnboardingAppSelectScreen
@@ -197,16 +177,11 @@ export default function PausePetApp() {
         />
       )}
 
-      {screen === "intervention" && settings.hasCompletedOnboarding && (
+      {screen === "intervention" && !needsOnboarding && (
         <InterventionScreen
-          state={state}
           settings={settings}
           onNotOpen={() => {
-            const { expGained } = applyPrevented(
-              settings.targetAppName,
-              settings.defaultPauseMinutes,
-            );
-            setLastExpGained(expGained);
+            applyPrevented(settings.targetAppName);
             setScreen("preventedSuccess");
           }}
           onWillOpen={() => setScreen("allowedDuration")}
@@ -217,7 +192,6 @@ export default function PausePetApp() {
         <PreventedSuccessScreen
           state={state}
           settings={settings}
-          expGained={lastExpGained}
           onSummary={() => setScreen("summary")}
           onRetry={goToIntervention}
         />
@@ -225,7 +199,6 @@ export default function PausePetApp() {
 
       {screen === "allowedDuration" && (
         <AllowedDurationScreen
-          state={state}
           settings={settings}
           onConfirm={(minutes) => {
             applyAllowed(settings.targetAppName, minutes);
@@ -236,21 +209,26 @@ export default function PausePetApp() {
 
       {screen === "allowedTimer" && endsAt && (
         <AllowedTimerScreen
-          state={state}
           settings={settings}
           endsAt={endsAt}
           onLeaveEarly={() => {
             applyReturned(settings.targetAppName);
             setEndsAt(null);
-            goToIntervention();
+            setScreen("returnedSuccess");
           }}
           onComplete={handleTimerComplete}
         />
       )}
 
+      {screen === "returnedSuccess" && (
+        <ReturnedSuccessScreen
+          settings={settings}
+          onRetry={goToIntervention}
+        />
+      )}
+
       {screen === "returnReminder" && (
         <ReturnReminderScreen
-          state={state}
           settings={settings}
           onReturn={() => {
             applyReturned(settings.targetAppName);
@@ -268,12 +246,18 @@ export default function PausePetApp() {
           state={state}
           settings={settings}
           onSimulate={goToIntervention}
-          onFutureProtection={() => setScreen("futureProtection")}
+          onResetOnboarding={() => {
+            clearOnboarding();
+            reloadFromStorage();
+            setOnboardingSelectedApp(null);
+            setOnboardingCustomName("");
+            setPendingTargetApp("");
+            setPendingZodiacSign(null);
+            setPendingBirthday({});
+            setRouteReady(true);
+            setScreen("onboardingAppSelect");
+          }}
         />
-      )}
-
-      {screen === "futureProtection" && (
-        <FutureProtectionScreen onBack={() => setScreen("summary")} />
       )}
     </main>
   );

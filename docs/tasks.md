@@ -35,13 +35,23 @@ Output: changed files + how to test.
 
 Implemented in repo:
 
-- Next.js App Router + TypeScript + Tailwind, mobile-first `AppShell`
-- **P1 onboarding:** target app selection → zodiac setup (sign or birthday) → companion reveal
-- **Pause loop:** home quick pause → active timer → success / gentle give-up
-- `lib/storage.ts` (`pause-pet-state`), `lib/settings.ts` (`pause-pet-settings`), `lib/zodiac.ts`
-- Zodiac companion messages on home, active, success, give-up (character matching only — not fortunes)
+- Next.js App Router + TypeScript + Tailwind, mobile-first layout
+- **Intervention-first UX:** simulates opening the target app → full-screen gradient → decision → branches
+- **Onboarding:** target app → zodiac (pick or birthday via `getZodiacFromBirthday`) → reveal → start
+- **SVG zodiac pets:** `components/ZodiacPet.tsx` (12 signs, moods, pastel accents from `lib/zodiac.ts`)
+- **localStorage:** `pause-pet-state` (`PausePetState`, `PauseEvent`), `pause-pet-settings` (`UserSettings`)
+- **Summary screen:** stats + recent events (not the default home after onboarding)
+- Web placeholder: `FutureProtectionScreen`, `lib/nativePermissions.ts`
 
-Tasks below may be historical; prefer PRD P1 scope when in doubt.
+Tasks below may be historical; prefer intervention-first web prototype when in doubt.
+
+### Future native roadmap (web prototype does not implement)
+
+1. **Usage Access** — detect when the user opens the selected target app
+2. **Native intervention screen** — show Pause Pet UI when the target app opens (not simulation)
+3. **Notification** — alert when allowed-use timer ends
+4. **Battery optimization exclusion** — keep background detection reliable
+5. **Optional Lock Mode** — Accessibility Service for stronger blocking (user consent only)
 
 ---
 

@@ -11,7 +11,7 @@ export default function AllowedDurationChips({
   onSelect,
 }: AllowedDurationChipsProps) {
   return (
-    <div className="grid grid-cols-2 gap-3">
+    <div className="duration-chip-grid">
       {ALLOWED_DURATIONS.map((minutes) => {
         const isSelected = selected === minutes;
         return (
@@ -19,16 +19,10 @@ export default function AllowedDurationChips({
             key={minutes}
             type="button"
             onClick={() => onSelect(minutes)}
-            className={`rounded-2xl border-2 px-4 py-5 text-center transition focus:outline-none focus:ring-2 focus:ring-amber-300 focus:ring-offset-2 ${
-              isSelected
-                ? "border-amber-400 bg-white text-amber-950 shadow-lg shadow-amber-200/60"
-                : "border-white/60 bg-white/70 text-stone-700 hover:border-amber-200"
-            }`}
+            className={`duration-chip ${isSelected ? "duration-chip--selected" : ""}`}
           >
-            <span className="block text-2xl font-bold tabular-nums">{minutes}</span>
-            <span className="mt-0.5 block text-xs font-medium text-stone-500">
-              분
-            </span>
+            <span className="duration-chip-value">{minutes}</span>
+            <span className="duration-chip-unit">분</span>
           </button>
         );
       })}

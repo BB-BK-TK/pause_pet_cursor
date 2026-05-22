@@ -4,11 +4,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import {
   completeOnboarding,
   createDefaultSettings,
-  loadUserSettings,
+  getUserSettings,
   saveUserSettings,
   type OnboardingCompletePayload,
   type UserSettings,
 } from "@/lib/settings";
+import { resetPausePetData } from "@/lib/storage";
 
 export function useUserSettings() {
   const [settings, setSettings] = useState<UserSettings>(createDefaultSettings);
@@ -18,7 +19,7 @@ export function useUserSettings() {
   settingsRef.current = settings;
 
   useEffect(() => {
-    const loaded = loadUserSettings();
+    const loaded = getUserSettings();
     setSettings(loaded);
     settingsRef.current = loaded;
     setHydrated(true);
@@ -47,10 +48,18 @@ export function useUserSettings() {
     return next;
   }, []);
 
+  const clearOnboarding = useCallback((): UserSettings => {
+    const { settings: next } = resetPausePetData();
+    settingsRef.current = next;
+    setSettings(next);
+    return next;
+  }, []);
+
   return {
     settings,
     hydrated,
     finishOnboarding,
     updateSettings,
+    clearOnboarding,
   };
 }

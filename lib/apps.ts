@@ -1,7 +1,7 @@
-/** Preset distracting apps for onboarding selection */
+/** Preset distracting apps for onboarding (order matches onboarding UI) */
 export const PRESET_APPS = [
-  "Instagram",
   "YouTube",
+  "Instagram",
   "TikTok",
   "Netflix",
   "웹툰",
@@ -12,3 +12,5 @@ export const PRESET_APPS = [
 export type PresetAppName = (typeof PRESET_APPS)[number];
 
 export const CUSTOM_APP_OPTION = "직접 입력" as const;
+
+export const ONBOARDING_APP_OPTIONS = [...PRESET_APPS, CUSTOM_APP_OPTION] as const;

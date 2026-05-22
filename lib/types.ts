@@ -8,16 +8,8 @@ export type ScreenName =
   | "preventedSuccess"
   | "allowedDuration"
   | "allowedTimer"
+  | "returnedSuccess"
   | "returnReminder"
-  | "summary"
-  | "futureProtection";
-
-/** Pet emotional state across intervention flow */
-export type PetMood =
-  | "curious"
-  | "waiting"
-  | "sitting"
-  | "proud"
-  | "comforting";
+  | "summary";
 
 export type { ZodiacSign } from "./zodiac";

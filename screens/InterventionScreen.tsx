@@ -1,30 +1,26 @@
-import InterventionShell from "@/components/InterventionShell";
+import InterventionLayout from "@/components/InterventionLayout";
 import PrimaryButton from "@/components/PrimaryButton";
-import PetDisplay from "@/components/PetDisplay";
 import { COPY } from "@/lib/copy";
-import type { PausePetState } from "@/lib/storage";
 import type { UserSettings } from "@/lib/settings";
-import { getZodiacCompanion } from "@/lib/zodiac";
 
 type InterventionScreenProps = {
-  state: PausePetState;
   settings: UserSettings;
   onNotOpen: () => void;
   onWillOpen: () => void;
 };
 
 export default function InterventionScreen({
-  state,
   settings,
   onNotOpen,
   onWillOpen,
 }: InterventionScreenProps) {
-  const companion = getZodiacCompanion(settings.zodiacSign);
   const { targetAppName } = settings;
 
   return (
-    <InterventionShell
-      showOpening={COPY.intervention.opening(targetAppName)}
+    <InterventionLayout
+      zodiacSign={settings.zodiacSign}
+      mood="intercept"
+      simulateLine={COPY.intervention.opening(targetAppName)}
       footer={
         <>
           <PrimaryButton onClick={onNotOpen}>
@@ -36,22 +32,8 @@ export default function InterventionScreen({
         </>
       }
     >
-      <div className="intervention-card flex flex-col items-center px-2 py-4 text-center">
-        <PetDisplay
-          mood="curious"
-          petLevel={state.petLevel}
-          petExp={state.petExp}
-          size="hero"
-          showProgress={false}
-          companionEmoji={companion.emoji}
-        />
-        <p className="mt-5 text-base font-semibold text-stone-800">
-          {COPY.intervention.askWait}
-        </p>
-        <p className="mt-2 text-lg font-bold text-stone-900">
-          {COPY.intervention.askOpen}
-        </p>
-      </div>
-    </InterventionShell>
+      <p className="intervention-body-text">{COPY.intervention.askWait}</p>
+      <p className="intervention-question">{COPY.intervention.askOpen}</p>
+    </InterventionLayout>
   );
 }
