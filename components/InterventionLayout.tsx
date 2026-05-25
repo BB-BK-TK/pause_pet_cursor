@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import InterventionShell from "@/components/InterventionShell";
-import ZodiacPet, { type ZodiacPetMood } from "@/components/ZodiacPet";
+import ZodiacCompanionImage from "@/components/ZodiacCompanionImage";
+import type { ZodiacPetMood } from "@/components/ZodiacPet";
 import { getZodiacCompanion, type ZodiacSign } from "@/lib/zodiac";
 
 type InterventionLayoutProps = {
@@ -32,10 +33,10 @@ export default function InterventionLayout({
           <p className="intervention-simulate-line">{simulateLine}</p>
         ) : null}
         <div className="intervention-pet-wrap">
-          <ZodiacPet
+          <ZodiacCompanionImage
             zodiacSign={zodiacSign}
+            preset="intervention"
             mood={mood}
-            size="xl"
             className="intervention-pet"
           />
         </div>

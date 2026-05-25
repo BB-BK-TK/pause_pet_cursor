@@ -4,7 +4,6 @@ import { useState } from "react";
 import AppOptionGrid from "@/components/AppOptionGrid";
 import OnboardingStep from "@/components/OnboardingStep";
 import PrimaryButton from "@/components/PrimaryButton";
-import SoftCard from "@/components/SoftCard";
 import { CUSTOM_APP_OPTION } from "@/lib/apps";
 import { COPY } from "@/lib/copy";
 
@@ -35,6 +34,7 @@ export default function OnboardingAppSelectScreen({
       subtitle={COPY.onboarding.appSelect.subtitle}
       footer={
         <PrimaryButton
+          variant="premium"
           onClick={() => {
             setTouched(true);
             if (canContinue) onNext();
@@ -48,22 +48,22 @@ export default function OnboardingAppSelectScreen({
       <AppOptionGrid selected={selectedApp} onSelect={onSelectApp} />
 
       {isCustom && (
-        <SoftCard className="!p-4">
-          <label className="block text-sm font-medium text-stone-700">
+        <div className="premium-input-card !p-4">
+          <label className="block text-sm font-medium text-violet-100">
             {COPY.onboarding.appSelect.customLabel}
             <input
               type="text"
               value={customAppName}
               onChange={(e) => onCustomAppNameChange(e.target.value)}
               placeholder={COPY.onboarding.appSelect.customPlaceholder}
-              className="mt-2 w-full rounded-xl border border-amber-100 bg-white px-3 py-2.5 text-sm text-stone-800 outline-none focus:border-amber-300 focus:ring-2 focus:ring-amber-200"
+              className="premium-input mt-2 w-full"
               maxLength={32}
             />
           </label>
           {touched && !canContinue && (
-            <p className="mt-2 text-xs text-stone-500">앱 이름을 입력해주세요.</p>
+            <p className="mt-2 text-xs text-violet-200/60">앱 이름을 입력해주세요.</p>
           )}
-        </SoftCard>
+        </div>
       )}
     </OnboardingStep>
   );

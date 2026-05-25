@@ -1,6 +1,7 @@
 export type AllowedDurationMinutes = 5 | 10 | 15 | 30;
 
 export type ScreenName =
+  | "appIntro"
   | "onboardingAppSelect"
   | "onboardingZodiac"
   | "onboardingReveal"

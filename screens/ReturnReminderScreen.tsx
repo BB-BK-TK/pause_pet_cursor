@@ -24,10 +24,10 @@ export default function ReturnReminderScreen({
       mood="comfort"
       footer={
         <>
-          <PrimaryButton onClick={onReturn}>
+          <PrimaryButton variant="premium" onClick={onReturn}>
             {COPY.returnReminder.goBack}
           </PrimaryButton>
-          <PrimaryButton variant="secondary" onClick={onExtend}>
+          <PrimaryButton variant="premium-secondary" onClick={onExtend}>
             {COPY.returnReminder.extend}
           </PrimaryButton>
         </>

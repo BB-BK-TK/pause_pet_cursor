@@ -17,7 +17,9 @@ export default function ReturnedSuccessScreen({
       zodiacSign={settings.zodiacSign}
       mood="happy"
       footer={
-        <PrimaryButton onClick={onRetry}>{COPY.returned.cta}</PrimaryButton>
+        <PrimaryButton variant="premium" onClick={onRetry}>
+          {COPY.returned.cta}
+        </PrimaryButton>
       }
     >
       <h1 className="intervention-title-lg">{COPY.returned.title}</h1>

@@ -4,6 +4,11 @@ import { isZodiacSign, type ZodiacSign } from "./zodiac";
 export const STATE_STORAGE_KEY = "pause-pet-state";
 export const SETTINGS_STORAGE_KEY = "pause-pet-settings";
 export const PERMISSION_SETUP_STORAGE_KEY = "pause-pet-permission-setup";
+export const UI_STATE_STORAGE_KEY = "pause-pet-ui-state";
+
+export type AppUiState = {
+  introSeen: boolean;
+};
 
 export type PermissionSetupState = {
   accessibilityIntroSeen: boolean;
@@ -215,6 +220,50 @@ export function needsPermissionSetup(): boolean {
     return false;
   }
   return !getPermissionSetupState().setupCompleted;
+}
+
+export function createDefaultAppUiState(): AppUiState {
+  return { introSeen: false };
+}
+
+function normalizeAppUiState(raw: unknown): AppUiState {
+  if (!raw || typeof raw !== "object") {
+    return createDefaultAppUiState();
+  }
+  const data = raw as Record<string, unknown>;
+  return { introSeen: data.introSeen === true };
+}
+
+export function getAppUiState(): AppUiState {
+  if (!isBrowser()) {
+    return createDefaultAppUiState();
+  }
+  const raw = window.localStorage.getItem(UI_STATE_STORAGE_KEY);
+  if (!raw) {
+    return createDefaultAppUiState();
+  }
+  try {
+    return normalizeAppUiState(JSON.parse(raw) as unknown);
+  } catch {
+    return createDefaultAppUiState();
+  }
+}
+
+export function saveAppUiState(state: AppUiState): void {
+  if (!isBrowser()) {
+    return;
+  }
+  window.localStorage.setItem(UI_STATE_STORAGE_KEY, JSON.stringify(state));
+}
+
+export function getIntroSeen(): boolean {
+  return getAppUiState().introSeen;
+}
+
+export function setIntroSeen(): AppUiState {
+  const next = { introSeen: true };
+  saveAppUiState(next);
+  return next;
 }
 
 function normalizePauseMinutes(value: unknown): number {
@@ -497,6 +546,7 @@ export function resetPausePetData(): {
     window.localStorage.removeItem(STATE_STORAGE_KEY);
     window.localStorage.removeItem(SETTINGS_STORAGE_KEY);
     window.localStorage.removeItem(PERMISSION_SETUP_STORAGE_KEY);
+    window.localStorage.removeItem(UI_STATE_STORAGE_KEY);
   }
 
   return { settings, state };

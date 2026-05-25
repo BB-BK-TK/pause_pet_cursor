@@ -25,6 +25,7 @@ export default function AllowedDurationScreen({
       mood="idle"
       footer={
         <PrimaryButton
+          variant="premium"
           onClick={() => selected && onConfirm(selected)}
           disabled={selected === null}
         >

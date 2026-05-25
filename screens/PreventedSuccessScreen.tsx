@@ -28,10 +28,10 @@ export default function PreventedSuccessScreen({
       mood="happy"
       footer={
         <>
-          <PrimaryButton onClick={onRetry}>
+          <PrimaryButton variant="premium" onClick={onRetry}>
             {COPY.prevented.ctaRetry}
           </PrimaryButton>
-          <PrimaryButton variant="secondary" onClick={onSummary}>
+          <PrimaryButton variant="premium-secondary" onClick={onSummary}>
             {COPY.prevented.ctaSummary}
           </PrimaryButton>
         </>

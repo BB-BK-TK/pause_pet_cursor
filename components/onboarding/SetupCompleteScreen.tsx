@@ -1,6 +1,6 @@
 "use client";
 
-import ZodiacPet from "@/components/ZodiacPet";
+import ZodiacCompanionImage from "@/components/ZodiacCompanionImage";
 import SetupLayout, {
   SetupButton,
   SetupIllustration,
@@ -32,7 +32,11 @@ export default function SetupCompleteScreen({
     >
       <div className="setup-stack setup-stack--center">
         <SetupIllustration>
-          <ZodiacPet zodiacSign={zodiacSign} mood="happy" size="lg" />
+          <ZodiacCompanionImage
+            zodiacSign={zodiacSign}
+            preset="reveal"
+            mood="happy"
+          />
         </SetupIllustration>
         <h1 className="setup-title">모두 완료!</h1>
         <p className="setup-body">

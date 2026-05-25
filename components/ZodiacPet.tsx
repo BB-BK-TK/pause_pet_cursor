@@ -6,6 +6,8 @@ type ZodiacPetProps = {
   zodiacSign: ZodiacSign;
   mood?: ZodiacPetMood;
   size?: "sm" | "md" | "lg" | "xl";
+  /** Hide SVG ground shadow + symbol when parent provides stage (e.g. ZodiacCompanionImage). */
+  embedded?: boolean;
   className?: string;
 };
 
@@ -180,6 +182,7 @@ export default function ZodiacPet({
   zodiacSign,
   mood = "idle",
   size = "md",
+  embedded = false,
   className = "",
 }: ZodiacPetProps) {
   const companion = getZodiacCompanion(zodiacSign);
@@ -198,7 +201,9 @@ export default function ZodiacPet({
       role="img"
       aria-label={`${companion.koreanName} 별자리 친구`}
     >
-      <ellipse cx="50" cy="88" rx="28" ry="6" fill="#000" opacity="0.06" />
+      {!embedded ? (
+        <ellipse cx="50" cy="88" rx="28" ry="6" fill="#000" opacity="0.06" />
+      ) : null}
       <circle cx="50" cy="58" r="34" fill={bodyFill} stroke={bodyStroke} strokeWidth="1.5" />
       <circle cx="50" cy="58" r="34" fill={`url(#shine-${zodiacSign})`} opacity="0.35" />
       <defs>
@@ -213,17 +218,19 @@ export default function ZodiacPet({
       <Mouth mood={mood} />
       <ellipse cx="38" cy="56" rx="5" ry="3" fill="#ffb4a2" opacity="0.35" />
       <ellipse cx="62" cy="56" rx="5" ry="3" fill="#ffb4a2" opacity="0.35" />
-      <text
-        x="50"
-        y="94"
-        textAnchor="middle"
-        fontSize="10"
-        fill={accent}
-        opacity="0.7"
-        fontWeight="600"
-      >
-        {companion.symbol}
-      </text>
+      {!embedded ? (
+        <text
+          x="50"
+          y="94"
+          textAnchor="middle"
+          fontSize="10"
+          fill={accent}
+          opacity="0.7"
+          fontWeight="600"
+        >
+          {companion.symbol}
+        </text>
+      ) : null}
     </svg>
   );
 }

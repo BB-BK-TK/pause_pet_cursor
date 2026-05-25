@@ -27,7 +27,7 @@ export default function AllowedTimerScreen({
       zodiacSign={settings.zodiacSign}
       mood="focus"
       footer={
-        <PrimaryButton variant="secondary" onClick={onLeaveEarly}>
+        <PrimaryButton variant="premium-secondary" onClick={onLeaveEarly}>
           {COPY.allowed.leaveEarly}
         </PrimaryButton>
       }

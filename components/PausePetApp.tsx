@@ -1,14 +1,15 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import ZodiacPet from "@/components/ZodiacPet";
+import ZodiacCompanionImage from "@/components/ZodiacCompanionImage";
+import IntroScreen from "@/components/onboarding/IntroScreen";
 import { usePausePetState } from "@/hooks/usePausePetState";
 import { useUserSettings } from "@/hooks/useUserSettings";
 import { CUSTOM_APP_OPTION } from "@/lib/apps";
 import { DEFAULT_PAUSE_MINUTES, EXTEND_MINUTES } from "@/lib/constants";
 import SetupFlow from "@/components/onboarding/SetupFlow";
 import { COPY } from "@/lib/copy";
-import { needsPermissionSetup } from "@/lib/storage";
+import { getIntroSeen, needsPermissionSetup } from "@/lib/storage";
 import type { AllowedDurationMinutes, ScreenName } from "@/lib/types";
 import type { ZodiacSign } from "@/lib/zodiac";
 import InterventionScreen from "@/screens/InterventionScreen";
@@ -63,7 +64,9 @@ export default function PausePetApp() {
   useEffect(() => {
     if (settingsHydrated && !didInitialRoute.current) {
       didInitialRoute.current = true;
-      if (needsOnboarding) {
+      if (!getIntroSeen()) {
+        setScreen("appIntro");
+      } else if (needsOnboarding) {
         setScreen("onboardingAppSelect");
       } else if (needsPermissionSetup()) {
         setScreen("permissionSetup");
@@ -130,7 +133,12 @@ export default function PausePetApp() {
     return (
       <main className="app-frame">
         <div className="flex flex-1 flex-col items-center justify-center gap-4">
-          <ZodiacPet zodiacSign="gemini" mood="idle" size="md" />
+          <ZodiacCompanionImage
+            zodiacSign="gemini"
+            preset="intervention"
+            mood="idle"
+            size="md"
+          />
           <p className="text-sm text-stone-500">{COPY.app.loading}</p>
         </div>
       </main>
@@ -139,11 +147,29 @@ export default function PausePetApp() {
 
   const useInterventionFrame = interventionScreens.includes(screen);
   const useSetupFrame = screen === "permissionSetup";
+  const usePremiumFrame =
+    screen === "appIntro" ||
+    screen === "onboardingAppSelect" ||
+    screen === "onboardingZodiac" ||
+    screen === "onboardingReveal";
 
   return (
     <main
-      className={`app-frame animate-fade-up ${useInterventionFrame ? "app-frame-intervention" : ""} ${useSetupFrame ? "app-frame-setup" : ""}`}
+      className={`app-frame animate-fade-up ${useInterventionFrame ? "app-frame-intervention" : ""} ${useSetupFrame ? "app-frame-setup" : ""} ${usePremiumFrame ? "app-frame-premium" : ""}`}
     >
+      {screen === "appIntro" && (
+        <IntroScreen
+          onStart={() => {
+            if (needsOnboarding) {
+              setScreen("onboardingAppSelect");
+            } else if (needsPermissionSetup()) {
+              setScreen("permissionSetup");
+            } else {
+              setScreen("intervention");
+            }
+          }}
+        />
+      )}
 
       {screen === "onboardingAppSelect" && (
         <OnboardingAppSelectScreen
@@ -274,7 +300,7 @@ export default function PausePetApp() {
             setPendingZodiacSign(null);
             setPendingBirthday({});
             setRouteReady(true);
-            setScreen("onboardingAppSelect");
+            setScreen(getIntroSeen() ? "onboardingAppSelect" : "appIntro");
           }}
         />
       )}

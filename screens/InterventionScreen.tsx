@@ -31,10 +31,10 @@ export default function InterventionScreen({
       header={showDemoBadge ? <SetupDemoBadge /> : undefined}
       footer={
         <>
-          <PrimaryButton onClick={onNotOpen}>
+          <PrimaryButton variant="premium" onClick={onNotOpen}>
             {COPY.intervention.notOpen}
           </PrimaryButton>
-          <PrimaryButton variant="secondary" onClick={onWillOpen}>
+          <PrimaryButton variant="premium-secondary" onClick={onWillOpen}>
             {COPY.intervention.willOpen}
           </PrimaryButton>
         </>

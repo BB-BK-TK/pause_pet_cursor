@@ -190,6 +190,18 @@
     @apply border-amber-400 bg-white text-amber-950 shadow-lg shadow-amber-200/50;
   }
 
+  .intervention-card .duration-chip {
+    @apply border-violet-300/25 bg-violet-500/10 text-violet-50;
+  }
+
+  .intervention-card .duration-chip--selected {
+    @apply border-violet-400/60 bg-violet-500/25 text-white shadow-lg shadow-violet-900/40;
+  }
+
+  .intervention-card .duration-chip-unit {
+    @apply text-violet-200/60;
+  }
+
   .duration-chip-value {
     @apply block text-2xl font-bold tabular-nums;
   }
@@ -227,11 +239,21 @@
     @apply relative flex min-h-0 flex-1 flex-col overflow-hidden;
   }
 
-  .intervention-gradient-default {
-    @apply absolute inset-0 bg-gradient-to-b from-amber-100 via-orange-50 to-violet-100;
+  .intervention-gradient {
+    @apply pointer-events-none absolute inset-0;
   }
 
-  .intervention-gradient {
+  .intervention-gradient--premium {
+    background: linear-gradient(
+      165deg,
+      #08081a 0%,
+      #12122a 40%,
+      #1a1838 70%,
+      #0e0e1c 100%
+    );
+  }
+
+  .intervention-gradient-accent {
     @apply pointer-events-none absolute inset-0;
   }
 
@@ -249,7 +271,7 @@
   }
 
   .intervention-simulate-line {
-    @apply w-full rounded-2xl bg-white/55 px-4 py-3 text-center text-[0.9375rem] font-semibold leading-snug text-stone-700 backdrop-blur-sm;
+    @apply w-full rounded-2xl border border-violet-300/20 bg-violet-500/10 px-4 py-3 text-center text-[0.9375rem] font-semibold leading-snug text-violet-100 backdrop-blur-sm;
   }
 
   .intervention-pet-wrap {
@@ -261,20 +283,20 @@
   }
 
   .intervention-card {
-    @apply w-full rounded-3xl border border-white/85 bg-white/90 px-5 py-5 text-center shadow-[0_20px_48px_rgba(100,70,30,0.16)] backdrop-blur-md sm:px-6 sm:py-6;
+    @apply w-full rounded-3xl border border-violet-200/15 bg-indigo-950/50 px-5 py-5 text-center shadow-[0_20px_48px_rgba(8,8,30,0.45)] backdrop-blur-md sm:px-6 sm:py-6;
     animation: intervention-rise 0.5s ease-out both;
   }
 
   .intervention-title {
-    @apply text-[1.25rem] font-bold leading-snug text-stone-900 sm:text-xl;
+    @apply text-[1.25rem] font-bold leading-snug text-violet-50 sm:text-xl;
   }
 
   .intervention-title-lg {
-    @apply text-[1.5rem] font-bold leading-snug text-stone-900 sm:text-2xl;
+    @apply text-[1.5rem] font-bold leading-snug text-violet-50 sm:text-2xl;
   }
 
   .intervention-body-text {
-    @apply mt-3 text-[1.0625rem] leading-relaxed text-stone-600;
+    @apply mt-3 text-[1.0625rem] leading-relaxed text-violet-100/80;
   }
 
   .intervention-body-text--tight {
@@ -282,15 +304,15 @@
   }
 
   .intervention-question {
-    @apply mt-4 text-[1.125rem] font-bold leading-snug text-stone-900;
+    @apply mt-4 text-[1.125rem] font-bold leading-snug text-violet-50;
   }
 
   .intervention-accent {
-    @apply mt-3 text-[0.9375rem] font-medium leading-relaxed text-amber-900/90;
+    @apply mt-3 text-[0.9375rem] font-medium leading-relaxed text-violet-200/85;
   }
 
   .intervention-footer {
-    @apply relative z-20 shrink-0 border-t border-white/40 bg-gradient-to-t from-white/50 to-transparent px-4 pt-3 backdrop-blur-md;
+    @apply relative z-20 shrink-0 border-t border-violet-400/15 bg-indigo-950/90 px-4 pt-3 backdrop-blur-md;
     padding-bottom: var(--footer-pad);
   }
 
@@ -502,6 +524,249 @@
   .setup-mock-toast {
     @apply rounded-xl bg-violet-500/25 px-4 py-3 text-center text-sm font-medium text-violet-50;
     animation: fade-up 0.35s ease-out both;
+  }
+
+  /* Premium indigo — intro + onboarding */
+  .app-frame-premium {
+    @apply max-w-none px-0;
+    padding: 0;
+    background: #0a0a14;
+  }
+
+  .premium-frame {
+    @apply relative flex min-h-0 flex-1 flex-col overflow-hidden text-violet-50;
+  }
+
+  .premium-gradient {
+    @apply pointer-events-none absolute inset-0;
+    background: linear-gradient(
+      165deg,
+      #07071a 0%,
+      #101028 35%,
+      #1a1640 65%,
+      #0b0b18 100%
+    );
+  }
+
+  .premium-scroll {
+    @apply relative z-10 min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain px-5;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: var(--scroll-pad-bottom);
+  }
+
+  .premium-footer {
+    @apply relative z-20 shrink-0 border-t border-violet-400/15 bg-indigo-950/90 px-5 pt-3 backdrop-blur-md;
+    padding-bottom: var(--footer-pad);
+  }
+
+  .premium-footer-stack {
+    @apply flex flex-col gap-2.5;
+  }
+
+  .premium-title {
+    @apply text-[1.5rem] font-bold leading-snug text-white;
+  }
+
+  .premium-body {
+    @apply text-[1.0625rem] leading-relaxed text-violet-100/75;
+  }
+
+  .premium-frame--onboarding .onboarding-step-label {
+    @apply text-center text-sm font-medium text-violet-300/80;
+  }
+
+  .premium-frame--onboarding .onboarding-title {
+    @apply text-[1.35rem] font-bold leading-snug text-white;
+  }
+
+  .premium-frame--onboarding .onboarding-subtitle {
+    @apply text-base leading-relaxed text-violet-100/70;
+  }
+
+  .intro-stack {
+    @apply flex flex-col gap-5 pb-4 pt-2;
+  }
+
+  .intro-hero-wrap {
+    @apply relative mx-auto flex w-full max-w-[17rem] items-center justify-center;
+  }
+
+  .intro-hero-glow {
+    @apply absolute inset-0 rounded-[2rem] opacity-70 blur-2xl;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(139, 92, 246, 0.35) 0%,
+      transparent 70%
+    );
+  }
+
+  .intro-hero-img {
+    @apply relative z-10 h-auto w-full object-contain;
+    max-height: min(42vh, 16rem);
+  }
+
+  .intro-hero-fallback {
+    @apply flex justify-center py-2;
+  }
+
+  .intro-benefits {
+    @apply flex flex-col gap-3;
+  }
+
+  .intro-benefit {
+    @apply flex items-start gap-3 text-[0.9375rem] leading-snug text-violet-100/85;
+  }
+
+  .intro-benefit-dot {
+    @apply mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-300;
+  }
+
+  .premium-detail-card {
+    @apply rounded-2xl border border-violet-400/20 bg-violet-500/10 px-4 py-3.5 text-sm leading-relaxed text-violet-100/80;
+  }
+
+  .premium-reveal-card {
+    @apply rounded-3xl border border-violet-300/20 bg-violet-500/10 shadow-[0_12px_40px_rgba(30,20,80,0.35)];
+  }
+
+  .pet-speech--premium {
+    @apply rounded-2xl border border-violet-300/15 bg-indigo-950/40 text-violet-100/85 shadow-sm;
+  }
+
+  .premium-input-card {
+    @apply rounded-2xl border border-violet-400/20 bg-white/5;
+  }
+
+  .premium-input {
+    @apply w-full rounded-xl border border-violet-300/25 bg-indigo-950/50 px-3 py-2.5 text-sm text-violet-50 outline-none focus:border-violet-400/60 focus:ring-2 focus:ring-violet-400/30;
+  }
+
+  .app-option-grid--premium .app-option-chip--premium {
+    @apply border-violet-300/20 bg-violet-500/10 text-violet-50 shadow-sm;
+  }
+
+  .app-option-grid--premium .app-option-chip--selected {
+    @apply border-violet-400/50 bg-violet-500/25 text-white shadow-md shadow-violet-900/40;
+  }
+
+  .zodiac-grid--premium .zodiac-grid-item--premium {
+    @apply border-violet-300/15 bg-violet-500/10;
+  }
+
+  .zodiac-grid--premium .zodiac-grid-item--selected {
+    @apply border-violet-400/55 bg-violet-500/25 shadow-md shadow-violet-900/35;
+  }
+
+  .zodiac-grid--premium .zodiac-grid-label {
+    @apply text-violet-100/90;
+  }
+
+  .zodiac-grid-item--premium {
+    @apply flex flex-col items-center gap-1 py-2.5;
+  }
+
+  /* Companion stage — integrated glow, no separate planet icon */
+  .companion-present {
+    @apply relative flex items-center justify-center;
+  }
+
+  .companion-present--stage {
+    @apply px-2 py-3;
+  }
+
+  .companion-stage-glow {
+    @apply absolute left-1/2 top-[58%] h-[42%] w-[72%] -translate-x-1/2 -translate-y-1/2 rounded-[50%] opacity-80 blur-xl;
+    background: radial-gradient(
+      ellipse at center,
+      color-mix(in srgb, var(--companion-accent, #a78bfa) 45%, transparent) 0%,
+      transparent 72%
+    );
+  }
+
+  .companion-stage-sparkles {
+    @apply pointer-events-none absolute inset-0;
+  }
+
+  .companion-spark {
+    @apply absolute h-1 w-1 rounded-full bg-white/70;
+    animation: soft-pulse 2.5s ease-in-out infinite;
+  }
+
+  .companion-spark--1 {
+    top: 18%;
+    left: 22%;
+  }
+
+  .companion-spark--2 {
+    top: 12%;
+    right: 20%;
+    animation-delay: 0.8s;
+  }
+
+  .companion-spark--3 {
+    bottom: 28%;
+    left: 50%;
+    animation-delay: 1.4s;
+  }
+
+  .companion-present__img {
+    @apply relative z-10 object-contain drop-shadow-[0_12px_28px_rgba(20,15,60,0.35)];
+  }
+
+  .companion-present__img--card {
+    max-height: 13.5rem;
+    object-fit: contain;
+  }
+
+  .companion-present__img--icon {
+    object-fit: contain;
+  }
+
+  .intervention-pet .companion-present__img--icon {
+    max-height: 11.5rem;
+  }
+
+  .premium-reveal-card .companion-present__img--card {
+    max-height: 14rem;
+  }
+
+  .companion-present__svg {
+    @apply relative z-10;
+  }
+
+  .companion-present--png {
+    @apply relative flex items-center justify-center;
+  }
+
+  .companion-present__asset {
+    @apply relative z-10 flex items-center justify-center;
+  }
+
+  .zodiac-grid-card {
+    @apply mx-auto w-full;
+  }
+
+  .zodiac-grid-card .companion-present__img--card {
+    height: 5rem !important;
+    width: auto !important;
+    margin-inline: auto;
+    object-fit: contain;
+  }
+
+  .intro-hero-asset {
+    @apply relative z-10 flex w-full justify-center;
+  }
+
+  .intervention-card .stat-chip {
+    @apply border-violet-300/20 bg-violet-500/10;
+  }
+
+  .intervention-card .stat-chip-value {
+    @apply text-violet-50;
+  }
+
+  .intervention-card .stat-chip-label {
+    @apply text-violet-200/65;
   }
 }
 

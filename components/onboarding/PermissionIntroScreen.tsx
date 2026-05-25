@@ -1,6 +1,6 @@
 "use client";
 
-import ZodiacPet from "@/components/ZodiacPet";
+import ZodiacCompanionImage from "@/components/ZodiacCompanionImage";
 import SetupLayout, {
   SetupButton,
   SetupIllustration,
@@ -39,7 +39,11 @@ export default function PermissionIntroScreen({
     >
       <div className="setup-stack">
         <SetupIllustration>
-          <ZodiacPet zodiacSign={zodiacSign} mood="idle" size="lg" />
+          <ZodiacCompanionImage
+            zodiacSign={zodiacSign}
+            preset="setupHero"
+            mood="idle"
+          />
         </SetupIllustration>
         <h1 className="setup-title">
           Pause Pet이 나타나려면

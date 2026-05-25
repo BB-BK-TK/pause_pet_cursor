@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import ZodiacPet from "@/components/ZodiacPet";
+import ZodiacCompanionImage from "@/components/ZodiacCompanionImage";
 import SetupLayout, {
   SetupButton,
   SetupIllustration,
@@ -44,7 +44,11 @@ export default function AccessibilityIntroScreen({
     >
       <div className="setup-stack">
         <SetupIllustration>
-          <ZodiacPet zodiacSign={zodiacSign} mood="focus" size="lg" />
+          <ZodiacCompanionImage
+            zodiacSign={zodiacSign}
+            preset="setupHero"
+            mood="focus"
+          />
         </SetupIllustration>
         <h1 className="setup-title">접근성 권한</h1>
         <p className="setup-body">

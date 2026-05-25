@@ -12,13 +12,15 @@ export default function InterventionShell({
   footer,
   softBg,
 }: InterventionShellProps) {
-  const gradientClass = softBg
-    ? `bg-gradient-to-b ${softBg}`
-    : "intervention-gradient-default";
-
   return (
     <div className="intervention-frame">
-      <div className={`intervention-gradient ${gradientClass}`} aria-hidden />
+      <div className="intervention-gradient intervention-gradient--premium" aria-hidden />
+      {softBg ? (
+        <div
+          className={`intervention-gradient-accent bg-gradient-to-b ${softBg} opacity-30`}
+          aria-hidden
+        />
+      ) : null}
       <div className="intervention-scroll">
         <div className="intervention-scroll-inner">{children}</div>
       </div>

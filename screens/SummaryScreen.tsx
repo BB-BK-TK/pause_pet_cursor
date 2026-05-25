@@ -2,7 +2,7 @@ import AppShell from "@/components/AppShell";
 import PrimaryButton from "@/components/PrimaryButton";
 import SoftCard from "@/components/SoftCard";
 import StatChip from "@/components/StatChip";
-import ZodiacPet from "@/components/ZodiacPet";
+import ZodiacCompanionImage from "@/components/ZodiacCompanionImage";
 import { COPY } from "@/lib/copy";
 import { formatSessionTime } from "@/lib/date";
 import type { PausePetState } from "@/lib/storage";
@@ -45,7 +45,11 @@ export default function SummaryScreen({
         </header>
 
         <SoftCard variant="highlight" className="summary-companion-card">
-          <ZodiacPet zodiacSign={settings.zodiacSign} mood="idle" size="sm" />
+          <ZodiacCompanionImage
+            zodiacSign={settings.zodiacSign}
+            preset="summary"
+            mood="idle"
+          />
           <div className="min-w-0 flex-1 text-left">
             <p className="text-base font-semibold text-stone-800">
               {companion.koreanName}

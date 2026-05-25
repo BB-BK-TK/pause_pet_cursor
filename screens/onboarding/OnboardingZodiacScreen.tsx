@@ -3,8 +3,7 @@
 import { useMemo, useState } from "react";
 import OnboardingStep from "@/components/OnboardingStep";
 import PrimaryButton from "@/components/PrimaryButton";
-import ZodiacPet from "@/components/ZodiacPet";
-import SoftCard from "@/components/SoftCard";
+import ZodiacCompanionImage from "@/components/ZodiacCompanionImage";
 import ZodiacSignGrid from "@/components/ZodiacSignGrid";
 import { COPY } from "@/lib/copy";
 import {
@@ -61,7 +60,7 @@ export default function OnboardingZodiacScreen({ onNext }: OnboardingZodiacScree
       title={COPY.onboarding.zodiac.title}
       subtitle={COPY.onboarding.zodiac.subtitle}
       footer={
-        <PrimaryButton onClick={handleNext} disabled={!resolvedSign}>
+        <PrimaryButton variant="premium" onClick={handleNext} disabled={!resolvedSign}>
           {COPY.onboarding.zodiac.cta}
         </PrimaryButton>
       }
@@ -72,8 +71,8 @@ export default function OnboardingZodiacScreen({ onNext }: OnboardingZodiacScree
           onClick={() => setMode("select")}
           className={`flex-1 rounded-full px-3 py-2 text-sm font-semibold transition ${
             mode === "select"
-              ? "bg-amber-400 text-white shadow-sm"
-              : "bg-white/80 text-stone-600"
+              ? "bg-violet-500 text-white shadow-sm"
+              : "bg-violet-500/10 text-violet-200/80"
           }`}
         >
           {COPY.onboarding.zodiac.tabSelect}
@@ -83,8 +82,8 @@ export default function OnboardingZodiacScreen({ onNext }: OnboardingZodiacScree
           onClick={() => setMode("birthday")}
           className={`flex-1 rounded-full px-3 py-2 text-sm font-semibold transition ${
             mode === "birthday"
-              ? "bg-amber-400 text-white shadow-sm"
-              : "bg-white/80 text-stone-600"
+              ? "bg-violet-500 text-white shadow-sm"
+              : "bg-violet-500/10 text-violet-200/80"
           }`}
         >
           {COPY.onboarding.zodiac.tabBirthday}
@@ -93,21 +92,25 @@ export default function OnboardingZodiacScreen({ onNext }: OnboardingZodiacScree
 
       {previewSign && (
         <div className="flex justify-center py-1">
-          <ZodiacPet zodiacSign={previewSign} mood="idle" size="md" />
+          <ZodiacCompanionImage
+            zodiacSign={previewSign}
+            preset="selectionPreview"
+            mood="idle"
+          />
         </div>
       )}
 
       {mode === "select" ? (
         <ZodiacSignGrid selected={selectedSign} onSelect={setSelectedSign} />
       ) : (
-        <SoftCard className="!p-4">
+        <div className="premium-input-card !p-4">
           <div className="grid grid-cols-2 gap-3">
-            <label className="block text-sm font-medium text-stone-700">
+            <label className="block text-sm font-medium text-violet-100">
               {COPY.onboarding.zodiac.birthdayMonth}
               <select
                 value={month}
                 onChange={(e) => setMonth(e.target.value)}
-                className="mt-2 w-full rounded-xl border border-amber-100 bg-white px-3 py-2.5 text-sm text-stone-800 outline-none focus:border-amber-300"
+                className="premium-input mt-2 w-full"
               >
                 <option value="">월</option>
                 {Array.from({ length: 12 }, (_, i) => i + 1).map((m) => (
@@ -122,7 +125,7 @@ export default function OnboardingZodiacScreen({ onNext }: OnboardingZodiacScree
               <select
                 value={day}
                 onChange={(e) => setDay(e.target.value)}
-                className="mt-2 w-full rounded-xl border border-amber-100 bg-white px-3 py-2.5 text-sm text-stone-800 outline-none focus:border-amber-300"
+                className="premium-input mt-2 w-full"
               >
                 <option value="">일</option>
                 {Array.from({ length: 31 }, (_, i) => i + 1).map((d) => (
@@ -135,13 +138,13 @@ export default function OnboardingZodiacScreen({ onNext }: OnboardingZodiacScree
           </div>
 
           {birthdaySign && (
-            <p className="mt-3 text-center text-sm font-medium text-amber-900/90">
+            <p className="mt-3 text-center text-sm font-medium text-violet-200/90">
               {COPY.onboarding.zodiac.birthdayHint(
                 getZodiacCompanion(birthdaySign).koreanName,
               )}
             </p>
           )}
-        </SoftCard>
+        </div>
       )}
     </OnboardingStep>
   );

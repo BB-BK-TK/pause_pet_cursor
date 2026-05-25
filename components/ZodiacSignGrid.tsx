@@ -1,3 +1,4 @@
+import ZodiacCompanionImage from "@/components/ZodiacCompanionImage";
 import {
   getZodiacCompanion,
   zodiacListForPicker,
@@ -13,7 +14,7 @@ export default function ZodiacSignGrid({ selected, onSelect }: ZodiacSignGridPro
   const signs = zodiacListForPicker();
 
   return (
-    <div className="zodiac-grid">
+    <div className="zodiac-grid zodiac-grid--premium">
       {signs.map((sign) => {
         const isSelected = selected === sign.id;
         return (
@@ -21,11 +22,13 @@ export default function ZodiacSignGrid({ selected, onSelect }: ZodiacSignGridPro
             key={sign.id}
             type="button"
             onClick={() => onSelect(sign.id)}
-            className={`zodiac-grid-item ${isSelected ? "zodiac-grid-item--selected" : ""}`}
+            className={`zodiac-grid-item zodiac-grid-item--premium ${isSelected ? "zodiac-grid-item--selected" : ""}`}
           >
-            <span className="text-xl leading-none" aria-hidden>
-              {sign.symbol}
-            </span>
+            <ZodiacCompanionImage
+              zodiacSign={sign.id}
+              preset="selection"
+              className="zodiac-grid-card"
+            />
             <span className="zodiac-grid-label">
               {getZodiacCompanion(sign.id).koreanName}
             </span>

@@ -7,7 +7,7 @@ type AppOptionGridProps = {
 
 export default function AppOptionGrid({ selected, onSelect }: AppOptionGridProps) {
   return (
-    <div className="app-option-grid">
+    <div className="app-option-grid app-option-grid--premium">
       {ONBOARDING_APP_OPTIONS.map((app) => {
         const isSelected = selected === app;
         return (
@@ -15,7 +15,7 @@ export default function AppOptionGrid({ selected, onSelect }: AppOptionGridProps
             key={app}
             type="button"
             onClick={() => onSelect(app)}
-            className={`app-option-chip ${isSelected ? "app-option-chip--selected" : ""}`}
+            className={`app-option-chip app-option-chip--premium ${isSelected ? "app-option-chip--selected" : ""}`}
           >
             {app}
           </button>
