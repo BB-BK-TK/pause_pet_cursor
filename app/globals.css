@@ -625,7 +625,13 @@
   }
 
   .intro-hero-wrap--artwork {
-    @apply w-full max-w-md px-0 pt-0;
+    @apply min-h-0 w-full max-w-[26rem] flex-1 px-0 pt-1;
+  }
+
+  /* Crop any baked-in footer CTAs still in the intro PNG; real buttons live in footer */
+  .intro-hero-wrap--artwork .intro-hero-asset {
+    @apply w-full overflow-hidden;
+    max-height: min(72vh, 32rem);
   }
 
   .intro-hero-img {
@@ -636,12 +642,10 @@
   .intro-hero-wrap--artwork .intro-hero-img {
     width: 100%;
     max-width: 26rem;
-    height: auto;
-    max-height: calc(100dvh - 10rem - var(--safe-top) - var(--safe-bottom));
-  }
-
-  .intro-hero-wrap--artwork {
-    @apply min-h-0 flex-1;
+    height: 100%;
+    max-height: none;
+    object-fit: cover;
+    object-position: top center;
   }
 
   .intro-hero-fallback {
@@ -750,17 +754,7 @@
 
   .companion-present__img {
     @apply relative z-10 object-contain drop-shadow-[0_12px_28px_rgba(20,15,60,0.35)];
-  }
-
-  /** Blend baked-in dark card/icon backgrounds into the indigo UI */
-  .companion-present__img--blend {
-    mix-blend-mode: plus-lighter;
-  }
-
-  @supports not (mix-blend-mode: plus-lighter) {
-    .companion-present__img--blend {
-      mix-blend-mode: screen;
-    }
+    background: transparent;
   }
 
   .companion-present__img--card {
@@ -802,9 +796,11 @@
     max-width: 100%;
     margin-inline: auto;
     object-fit: contain;
+    background: transparent;
   }
 
-  .zodiac-grid-card.companion-present--png {
+  .zodiac-grid-card.companion-present--png,
+  .zodiac-grid-card .companion-present__asset {
     background: transparent;
   }
 
