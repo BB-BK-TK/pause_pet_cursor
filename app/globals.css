@@ -583,30 +583,73 @@
     @apply text-base leading-relaxed text-violet-100/70;
   }
 
-  .intro-stack {
-    @apply flex flex-col gap-5 pb-4 pt-2;
+  /* First-launch intro — full artwork PNG is the screen layout */
+  .intro-screen {
+    background: #0a0a18;
+  }
+
+  .intro-screen__bg {
+    @apply pointer-events-none absolute inset-0;
+    background: radial-gradient(
+      ellipse 80% 45% at 50% 12%,
+      rgba(88, 62, 160, 0.45) 0%,
+      transparent 55%
+    ),
+    linear-gradient(180deg, #0c0c1e 0%, #0a0a18 42%, #080816 100%);
+  }
+
+  .intro-screen__scroll {
+    @apply relative z-10 flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden overscroll-contain;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.5rem;
+  }
+
+  .intro-screen__scroll--artwork {
+    @apply px-0;
+  }
+
+  .intro-screen__copy {
+    @apply flex flex-col gap-5 px-5 pb-2 pt-2;
+  }
+
+  .intro-screen__detail {
+    @apply mx-5 mb-2;
+  }
+
+  .intro-screen__footer {
+    @apply border-t border-violet-400/10 bg-[#0a0a18]/95;
   }
 
   .intro-hero-wrap {
-    @apply relative mx-auto flex w-full max-w-[17rem] items-center justify-center;
+    @apply relative mx-auto flex w-full items-center justify-center px-5 pt-2;
   }
 
-  .intro-hero-glow {
-    @apply absolute inset-0 rounded-[2rem] opacity-70 blur-2xl;
-    background: radial-gradient(
-      ellipse at center,
-      rgba(139, 92, 246, 0.35) 0%,
-      transparent 70%
-    );
+  .intro-hero-wrap--artwork {
+    @apply w-full max-w-md px-0 pt-0;
   }
 
   .intro-hero-img {
-    @apply relative z-10 h-auto w-full object-contain;
+    @apply relative z-10 mx-auto block h-auto w-full object-contain object-top;
     max-height: min(42vh, 16rem);
   }
 
+  .intro-hero-wrap--artwork .intro-hero-img {
+    width: 100%;
+    max-width: 26rem;
+    height: auto;
+    max-height: calc(100dvh - 10rem - var(--safe-top) - var(--safe-bottom));
+  }
+
+  .intro-hero-wrap--artwork {
+    @apply min-h-0 flex-1;
+  }
+
   .intro-hero-fallback {
-    @apply flex justify-center py-2;
+    @apply flex justify-center py-4;
+  }
+
+  .intro-hero-asset {
+    @apply relative z-10 flex w-full justify-center;
   }
 
   .intro-benefits {
@@ -626,7 +669,7 @@
   }
 
   .premium-reveal-card {
-    @apply rounded-3xl border border-violet-300/20 bg-violet-500/10 shadow-[0_12px_40px_rgba(30,20,80,0.35)];
+    @apply rounded-3xl border border-violet-300/15 bg-transparent px-2 py-6 shadow-none;
   }
 
   .pet-speech--premium {
@@ -650,19 +693,15 @@
   }
 
   .zodiac-grid--premium .zodiac-grid-item--premium {
-    @apply border-violet-300/15 bg-violet-500/10;
+    @apply border-transparent bg-transparent shadow-none;
   }
 
   .zodiac-grid--premium .zodiac-grid-item--selected {
-    @apply border-violet-400/55 bg-violet-500/25 shadow-md shadow-violet-900/35;
-  }
-
-  .zodiac-grid--premium .zodiac-grid-label {
-    @apply text-violet-100/90;
+    @apply border-violet-400/40 bg-violet-500/15 shadow-md shadow-violet-900/30;
   }
 
   .zodiac-grid-item--premium {
-    @apply flex flex-col items-center gap-1 py-2.5;
+    @apply flex flex-col items-center justify-center gap-0 py-1.5;
   }
 
   /* Companion stage — integrated glow, no separate planet icon */
@@ -713,6 +752,17 @@
     @apply relative z-10 object-contain drop-shadow-[0_12px_28px_rgba(20,15,60,0.35)];
   }
 
+  /** Blend baked-in dark card/icon backgrounds into the indigo UI */
+  .companion-present__img--blend {
+    mix-blend-mode: plus-lighter;
+  }
+
+  @supports not (mix-blend-mode: plus-lighter) {
+    .companion-present__img--blend {
+      mix-blend-mode: screen;
+    }
+  }
+
   .companion-present__img--card {
     max-height: 13.5rem;
     object-fit: contain;
@@ -735,7 +785,7 @@
   }
 
   .companion-present--png {
-    @apply relative flex items-center justify-center;
+    @apply relative isolate flex items-center justify-center;
   }
 
   .companion-present__asset {
@@ -747,14 +797,15 @@
   }
 
   .zodiac-grid-card .companion-present__img--card {
-    height: 5rem !important;
+    height: 6.25rem !important;
     width: auto !important;
+    max-width: 100%;
     margin-inline: auto;
     object-fit: contain;
   }
 
-  .intro-hero-asset {
-    @apply relative z-10 flex w-full justify-center;
+  .zodiac-grid-card.companion-present--png {
+    background: transparent;
   }
 
   .intervention-card .stat-chip {

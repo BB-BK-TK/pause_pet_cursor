@@ -115,8 +115,8 @@ export default function ZodiacCompanionImage(props: ZodiacCompanionImageProps) {
   const height = variant === "card" ? cardHeights[size] : iconHeights[size];
   const imgClass =
     variant === "card"
-      ? "companion-present__img companion-present__img--card"
-      : "companion-present__img companion-present__img--icon";
+      ? "companion-present__img companion-present__img--card companion-present__img--blend"
+      : "companion-present__img companion-present__img--icon companion-present__img--blend";
 
   if (loadState === "error") {
     return (

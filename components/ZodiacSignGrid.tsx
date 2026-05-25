@@ -1,9 +1,5 @@
 import ZodiacCompanionImage from "@/components/ZodiacCompanionImage";
-import {
-  getZodiacCompanion,
-  zodiacListForPicker,
-  type ZodiacSign,
-} from "@/lib/zodiac";
+import { zodiacListForPicker, type ZodiacSign } from "@/lib/zodiac";
 
 type ZodiacSignGridProps = {
   selected: ZodiacSign | null;
@@ -29,9 +25,7 @@ export default function ZodiacSignGrid({ selected, onSelect }: ZodiacSignGridPro
               preset="selection"
               className="zodiac-grid-card"
             />
-            <span className="zodiac-grid-label">
-              {getZodiacCompanion(sign.id).koreanName}
-            </span>
+            {/* Card PNGs include the sign name — avoid duplicate label */}
           </button>
         );
       })}
