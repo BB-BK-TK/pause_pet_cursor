@@ -576,7 +576,9 @@ The current Next.js app is a **web/PWA prototype**. It must **not** request Andr
 
 1. Target app selection  
 2. Zodiac companion (sign or birthday)  
-3. Companion reveal → 5-minute **Soft Pause** on Home  
+3. Companion reveal  
+4. **Native permission setup (mock)** — one sec–style dark screens; state in `pause-pet-permission-setup`  
+5. Intervention simulation (app-open pause)  
 
 **Future Android onboarding**
 
@@ -593,4 +595,57 @@ The current Next.js app is a **web/PWA prototype**. It must **not** request Andr
 
 ---
 
-*Last updated: P1 web prototype + §21 Android native permission spec (docs + placeholders).*
+## 22. Native Permission Onboarding (web mock — P1)
+
+The web/PWA prototype includes a **one sec–inspired** permission setup journey so users understand the future Android flow. It does **not** call native APIs or open system settings.
+
+### 22.1 Screens (mock)
+
+| Step | Purpose |
+|------|---------|
+| Permission overview | Trust bullets; start or **나중에 할게요** (skip) |
+| Accessibility intro + guide | Explain accessibility; numbered steps |
+| Mock accessibility settings | Toggle **권한 허용** → `accessibilityGrantedMock` |
+| Usage access intro + guide | Explain app usage permission |
+| Mock usage access settings | Toggle → `usageAccessGrantedMock` |
+| Battery optimization | Explain exclusion; mock **끄기** |
+| Setup complete | **완료** → `setupCompleted` |
+
+UI: `components/onboarding/SetupFlow.tsx` and related screens. Label: **웹 데모 모드**.
+
+### 22.2 localStorage — `pause-pet-permission-setup`
+
+```ts
+type PermissionSetupState = {
+  accessibilityIntroSeen: boolean
+  accessibilityGrantedMock: boolean
+  usageAccessIntroSeen: boolean
+  usageAccessGrantedMock: boolean
+  batteryOptimizationIntroSeen: boolean
+  batteryOptimizationDisabledMock: boolean
+  setupCompleted: boolean
+  setupSkipped: boolean
+}
+```
+
+Helpers: `getPermissionSetupState`, `savePermissionSetupState`, `markAccessibilityGrantedMock`, `markUsageAccessGrantedMock`, `markBatteryOptimizationDisabledMock`, `markSetupCompleted`, `markSetupSkipped`, `resetPermissionSetupState`, `needsPermissionSetup()`.
+
+### 22.3 Skip behavior
+
+- **나중에 할게요** on the overview (or skip mid-flow where offered) sets `setupSkipped` and `setupCompleted` so the web intervention demo is never blocked.
+- Skipping does not grant mock permissions.
+
+### 22.4 Permissions covered (product)
+
+| Permission | Mock in web | Native later |
+|------------|-------------|--------------|
+| Accessibility | Yes | Accessibility Service (Lock Mode) |
+| Usage Access | Yes | `PACKAGE_USAGE_STATS` / Usage Access |
+| Battery optimization exclusion | Yes | `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` |
+| Notification | No (future) | Post-pause / return reminders |
+
+Actual Android implementation (Intents, service checks, revoke fallbacks) is **out of scope** for the Next.js repo until a dedicated Android app exists.
+
+---
+
+*Last updated: P1 web prototype + mock permission onboarding (§22) + §21 Android native spec.*

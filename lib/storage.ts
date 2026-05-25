@@ -3,6 +3,18 @@ import { isZodiacSign, type ZodiacSign } from "./zodiac";
 
 export const STATE_STORAGE_KEY = "pause-pet-state";
 export const SETTINGS_STORAGE_KEY = "pause-pet-settings";
+export const PERMISSION_SETUP_STORAGE_KEY = "pause-pet-permission-setup";
+
+export type PermissionSetupState = {
+  accessibilityIntroSeen: boolean;
+  accessibilityGrantedMock: boolean;
+  usageAccessIntroSeen: boolean;
+  usageAccessGrantedMock: boolean;
+  batteryOptimizationIntroSeen: boolean;
+  batteryOptimizationDisabledMock: boolean;
+  setupCompleted: boolean;
+  setupSkipped: boolean;
+};
 
 /** @deprecated Use STATE_STORAGE_KEY */
 export const STORAGE_KEY = STATE_STORAGE_KEY;
@@ -81,6 +93,128 @@ export function createDefaultState(): PausePetState {
     recentEvents: [],
     lastActiveDate: null,
   };
+}
+
+export function createDefaultPermissionSetupState(): PermissionSetupState {
+  return {
+    accessibilityIntroSeen: false,
+    accessibilityGrantedMock: false,
+    usageAccessIntroSeen: false,
+    usageAccessGrantedMock: false,
+    batteryOptimizationIntroSeen: false,
+    batteryOptimizationDisabledMock: false,
+    setupCompleted: false,
+    setupSkipped: false,
+  };
+}
+
+function normalizePermissionSetup(raw: unknown): PermissionSetupState {
+  const fallback = createDefaultPermissionSetupState();
+  if (!raw || typeof raw !== "object") {
+    return fallback;
+  }
+  const data = raw as Record<string, unknown>;
+  return {
+    accessibilityIntroSeen: data.accessibilityIntroSeen === true,
+    accessibilityGrantedMock: data.accessibilityGrantedMock === true,
+    usageAccessIntroSeen: data.usageAccessIntroSeen === true,
+    usageAccessGrantedMock: data.usageAccessGrantedMock === true,
+    batteryOptimizationIntroSeen: data.batteryOptimizationIntroSeen === true,
+    batteryOptimizationDisabledMock:
+      data.batteryOptimizationDisabledMock === true,
+    setupCompleted: data.setupCompleted === true,
+    setupSkipped: data.setupSkipped === true,
+  };
+}
+
+export function getPermissionSetupState(): PermissionSetupState {
+  if (!isBrowser()) {
+    return createDefaultPermissionSetupState();
+  }
+  const raw = window.localStorage.getItem(PERMISSION_SETUP_STORAGE_KEY);
+  if (!raw) {
+    return createDefaultPermissionSetupState();
+  }
+  try {
+    return normalizePermissionSetup(JSON.parse(raw) as unknown);
+  } catch {
+    return createDefaultPermissionSetupState();
+  }
+}
+
+export function savePermissionSetupState(state: PermissionSetupState): void {
+  if (!isBrowser()) {
+    return;
+  }
+  window.localStorage.setItem(
+    PERMISSION_SETUP_STORAGE_KEY,
+    JSON.stringify(state),
+  );
+}
+
+function patchPermissionSetup(
+  patch: Partial<PermissionSetupState>,
+): PermissionSetupState {
+  const next = { ...getPermissionSetupState(), ...patch };
+  savePermissionSetupState(next);
+  return next;
+}
+
+export function markAccessibilityIntroSeen(): PermissionSetupState {
+  return patchPermissionSetup({ accessibilityIntroSeen: true });
+}
+
+export function markAccessibilityGrantedMock(): PermissionSetupState {
+  return patchPermissionSetup({
+    accessibilityIntroSeen: true,
+    accessibilityGrantedMock: true,
+  });
+}
+
+export function markUsageAccessIntroSeen(): PermissionSetupState {
+  return patchPermissionSetup({ usageAccessIntroSeen: true });
+}
+
+export function markUsageAccessGrantedMock(): PermissionSetupState {
+  return patchPermissionSetup({
+    usageAccessIntroSeen: true,
+    usageAccessGrantedMock: true,
+  });
+}
+
+export function markBatteryOptimizationIntroSeen(): PermissionSetupState {
+  return patchPermissionSetup({ batteryOptimizationIntroSeen: true });
+}
+
+export function markBatteryOptimizationDisabledMock(): PermissionSetupState {
+  return patchPermissionSetup({
+    batteryOptimizationIntroSeen: true,
+    batteryOptimizationDisabledMock: true,
+  });
+}
+
+export function markSetupCompleted(): PermissionSetupState {
+  return patchPermissionSetup({ setupCompleted: true, setupSkipped: false });
+}
+
+export function markSetupSkipped(): PermissionSetupState {
+  return patchPermissionSetup({ setupCompleted: true, setupSkipped: true });
+}
+
+export function resetPermissionSetupState(): PermissionSetupState {
+  const state = createDefaultPermissionSetupState();
+  if (isBrowser()) {
+    window.localStorage.removeItem(PERMISSION_SETUP_STORAGE_KEY);
+  }
+  return state;
+}
+
+export function needsPermissionSetup(): boolean {
+  const settings = getUserSettings();
+  if (!settings.hasCompletedOnboarding) {
+    return false;
+  }
+  return !getPermissionSetupState().setupCompleted;
 }
 
 function normalizePauseMinutes(value: unknown): number {
@@ -362,6 +496,7 @@ export function resetPausePetData(): {
   if (isBrowser()) {
     window.localStorage.removeItem(STATE_STORAGE_KEY);
     window.localStorage.removeItem(SETTINGS_STORAGE_KEY);
+    window.localStorage.removeItem(PERMISSION_SETUP_STORAGE_KEY);
   }
 
   return { settings, state };

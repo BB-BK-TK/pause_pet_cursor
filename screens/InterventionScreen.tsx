@@ -1,7 +1,9 @@
+import { SetupDemoBadge } from "@/components/onboarding/SetupLayout";
 import InterventionLayout from "@/components/InterventionLayout";
 import PrimaryButton from "@/components/PrimaryButton";
 import { COPY } from "@/lib/copy";
 import type { UserSettings } from "@/lib/settings";
+import { getPermissionSetupState } from "@/lib/storage";
 
 type InterventionScreenProps = {
   settings: UserSettings;
@@ -15,12 +17,18 @@ export default function InterventionScreen({
   onWillOpen,
 }: InterventionScreenProps) {
   const { targetAppName } = settings;
+  const permission = getPermissionSetupState();
+  const showDemoBadge =
+    permission.setupSkipped ||
+    !permission.accessibilityGrantedMock ||
+    !permission.usageAccessGrantedMock;
 
   return (
     <InterventionLayout
       zodiacSign={settings.zodiacSign}
       mood="intercept"
       simulateLine={COPY.intervention.opening(targetAppName)}
+      header={showDemoBadge ? <SetupDemoBadge /> : undefined}
       footer={
         <>
           <PrimaryButton onClick={onNotOpen}>

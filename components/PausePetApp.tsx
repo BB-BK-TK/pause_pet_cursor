@@ -6,7 +6,9 @@ import { usePausePetState } from "@/hooks/usePausePetState";
 import { useUserSettings } from "@/hooks/useUserSettings";
 import { CUSTOM_APP_OPTION } from "@/lib/apps";
 import { DEFAULT_PAUSE_MINUTES, EXTEND_MINUTES } from "@/lib/constants";
+import SetupFlow from "@/components/onboarding/SetupFlow";
 import { COPY } from "@/lib/copy";
+import { needsPermissionSetup } from "@/lib/storage";
 import type { AllowedDurationMinutes, ScreenName } from "@/lib/types";
 import type { ZodiacSign } from "@/lib/zodiac";
 import InterventionScreen from "@/screens/InterventionScreen";
@@ -52,7 +54,6 @@ export default function PausePetApp() {
 
   const needsOnboarding =
     !settings.hasCompletedOnboarding || !settings.targetAppName.trim();
-
   const hydrated = stateHydrated && settingsHydrated;
 
   const [screen, setScreen] = useState<ScreenName>("onboardingAppSelect");
@@ -62,7 +63,13 @@ export default function PausePetApp() {
   useEffect(() => {
     if (settingsHydrated && !didInitialRoute.current) {
       didInitialRoute.current = true;
-      setScreen(needsOnboarding ? "onboardingAppSelect" : "intervention");
+      if (needsOnboarding) {
+        setScreen("onboardingAppSelect");
+      } else if (needsPermissionSetup()) {
+        setScreen("permissionSetup");
+      } else {
+        setScreen("intervention");
+      }
       setRouteReady(true);
     }
   }, [settingsHydrated, needsOnboarding]);
@@ -131,10 +138,11 @@ export default function PausePetApp() {
   }
 
   const useInterventionFrame = interventionScreens.includes(screen);
+  const useSetupFrame = screen === "permissionSetup";
 
   return (
     <main
-      className={`app-frame animate-fade-up ${useInterventionFrame ? "app-frame-intervention" : ""}`}
+      className={`app-frame animate-fade-up ${useInterventionFrame ? "app-frame-intervention" : ""} ${useSetupFrame ? "app-frame-setup" : ""}`}
     >
 
       {screen === "onboardingAppSelect" && (
@@ -172,8 +180,19 @@ export default function PausePetApp() {
               birthdayMonth: pendingBirthday.month,
               birthdayDay: pendingBirthday.day,
             });
-            goToIntervention();
+            setScreen("permissionSetup");
           }}
+        />
+      )}
+
+      {screen === "permissionSetup" && (
+        <SetupFlow
+          zodiacSign={settings.zodiacSign ?? pendingZodiacSign ?? "gemini"}
+          targetAppName={
+            settings.targetAppName.trim() || pendingTargetApp
+          }
+          onFinish={goToIntervention}
+          onSkip={goToIntervention}
         />
       )}
 

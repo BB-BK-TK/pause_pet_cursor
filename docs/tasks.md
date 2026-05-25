@@ -455,6 +455,17 @@ Source of truth for permission copy: `lib/nativePermissions.ts`. Placeholder UI:
 - [x] `lib/nativePermissions.ts` — modes, permissions, Korean copy
 - [x] `FutureProtectionScreen` — read-only explainer from Home
 - [x] PRD §21 — full permission model
+- [x] **Mock permission onboarding** — `components/onboarding/SetupFlow.tsx`, dark one sec–style screens, `pause-pet-permission-setup` in localStorage (PRD §22)
+
+### Replace mock permission UI with native (Android)
+
+- [ ] Replace mock settings screens with Android Intent deep links (Accessibility, Usage Access, battery optimization)
+- [ ] Implement actual Usage Access check (`AppOpsManager` / `UsageStatsManager`)
+- [ ] Implement Accessibility Service for Lock Mode only
+- [ ] Implement battery optimization exclusion request
+- [ ] Implement notification permission + pause-complete alerts
+- [ ] Add fallback UI if permissions are revoked after onboarding
+- [ ] Re-run permission setup when user upgrades protection mode (Detect → Lock)
 
 Do **not** add Android dependencies or Gradle modules to the Next.js repo until Phase 3A starts in a separate project.
 

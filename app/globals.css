@@ -297,6 +297,212 @@
   .zodiac-pet {
     filter: drop-shadow(0 10px 20px rgba(120, 80, 40, 0.12));
   }
+
+  /* Permission setup — one sec–style dark onboarding */
+  .app-frame-setup {
+    @apply max-w-none px-0;
+    padding-top: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+  }
+
+  .setup-frame {
+    @apply relative flex min-h-0 flex-1 flex-col overflow-hidden text-violet-50;
+  }
+
+  .setup-gradient {
+    @apply pointer-events-none absolute inset-0;
+    background: linear-gradient(
+      165deg,
+      #0a0a12 0%,
+      #12121f 38%,
+      #1a1528 72%,
+      #0f0f18 100%
+    );
+  }
+
+  .setup-top-bar {
+    @apply relative z-20 flex shrink-0 justify-center px-4 pt-3;
+    padding-top: max(0.75rem, var(--safe-top));
+  }
+
+  .setup-demo-badge {
+    @apply rounded-full border border-violet-400/25 bg-violet-500/10 px-3 py-1 text-[0.6875rem] font-semibold tracking-wide text-violet-200/90;
+  }
+
+  .setup-scroll {
+    @apply relative z-10 min-h-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-contain px-5;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: var(--scroll-pad-bottom);
+  }
+
+  .setup-footer {
+    @apply relative z-20 shrink-0 border-t border-violet-400/15 bg-[#0c0c14]/90 px-5 pt-3 backdrop-blur-md;
+    padding-bottom: var(--footer-pad);
+  }
+
+  .setup-footer-stack {
+    @apply flex flex-col gap-2.5;
+  }
+
+  .setup-stack {
+    @apply flex flex-col gap-5 pb-4 pt-2;
+  }
+
+  .setup-stack--center {
+    @apply items-center text-center;
+  }
+
+  .setup-illustration {
+    @apply flex items-center justify-center py-2;
+  }
+
+  .setup-icon-svg {
+    @apply h-[7.5rem] w-[7.5rem];
+  }
+
+  .setup-title {
+    @apply text-[1.5rem] font-bold leading-snug text-white;
+  }
+
+  .setup-body {
+    @apply text-[1.0625rem] leading-relaxed text-violet-100/75;
+  }
+
+  .setup-detail-text {
+    @apply rounded-2xl border border-violet-400/20 bg-violet-500/10 px-4 py-3.5 text-sm leading-relaxed text-violet-100/80;
+  }
+
+  .setup-card {
+    @apply rounded-2xl border border-violet-400/20 bg-white/5 px-4 py-4;
+  }
+
+  .setup-card--info {
+    @apply border-violet-300/25 bg-violet-500/10;
+  }
+
+  .setup-card--warn {
+    @apply border-amber-400/30 bg-amber-500/10;
+  }
+
+  .setup-card-label {
+    @apply mb-3 text-sm font-semibold text-violet-200/90;
+  }
+
+  .setup-card-body {
+    @apply text-[0.9375rem] leading-relaxed text-violet-100/80;
+  }
+
+  .setup-trust-list {
+    @apply flex flex-col gap-2.5;
+  }
+
+  .setup-trust-item {
+    @apply flex items-start gap-2.5 text-[0.9375rem] leading-snug text-violet-100/85;
+  }
+
+  .setup-trust-dot {
+    @apply mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-300;
+  }
+
+  .setup-steps {
+    @apply flex list-none flex-col gap-3 p-0;
+  }
+
+  .setup-step {
+    @apply flex gap-3 rounded-2xl border border-violet-400/15 bg-white/5 px-3.5 py-3.5;
+  }
+
+  .setup-step-num {
+    @apply flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-violet-500/30 text-sm font-bold text-violet-50;
+  }
+
+  .setup-step p {
+    @apply min-w-0 flex-1 text-[0.9375rem] leading-relaxed text-violet-100/85;
+  }
+
+  .setup-btn {
+    @apply btn-touch w-full rounded-full px-5 text-[1.0625rem] font-semibold leading-snug transition focus:outline-none focus:ring-2 focus:ring-violet-400/50 focus:ring-offset-2 focus:ring-offset-[#0c0c14] disabled:cursor-not-allowed disabled:opacity-45;
+  }
+
+  .setup-btn--primary {
+    @apply bg-gradient-to-b from-violet-400 to-violet-600 text-white shadow-[0_6px_24px_rgba(139,92,246,0.35)] active:scale-[0.98];
+  }
+
+  .setup-btn--secondary {
+    @apply border border-violet-400/35 bg-violet-500/15 text-violet-50 active:scale-[0.98];
+  }
+
+  .setup-btn--ghost {
+    @apply bg-transparent text-violet-200/70 hover:text-violet-100;
+  }
+
+  .setup-mock {
+    @apply flex flex-col gap-5 pb-2 pt-1;
+    padding-top: max(0.5rem, var(--safe-top));
+  }
+
+  .setup-mock-header {
+    @apply flex items-center gap-3;
+  }
+
+  .setup-mock-back {
+    @apply flex h-10 w-10 items-center justify-center rounded-full text-xl text-violet-200/80 transition hover:bg-white/5;
+  }
+
+  .setup-mock-title {
+    @apply text-lg font-semibold text-white;
+  }
+
+  .setup-mock-app-row {
+    @apply flex items-center gap-4 rounded-2xl border border-white/10 bg-white/5 px-4 py-4;
+  }
+
+  .setup-mock-app-icon {
+    @apply flex h-12 w-12 items-center justify-center rounded-xl bg-violet-500/30 text-xl;
+  }
+
+  .setup-mock-app-name {
+    @apply font-semibold text-white;
+  }
+
+  .setup-mock-app-version {
+    @apply mt-0.5 text-xs text-violet-200/55;
+  }
+
+  .setup-mock-toggle-row {
+    @apply flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-4;
+  }
+
+  .setup-mock-toggle-label {
+    @apply text-base font-medium text-white;
+  }
+
+  .setup-mock-toggle {
+    @apply relative h-8 w-14 rounded-full bg-stone-600 transition;
+  }
+
+  .setup-mock-toggle--on {
+    @apply bg-violet-500;
+  }
+
+  .setup-mock-toggle-knob {
+    @apply absolute left-1 top-1 h-6 w-6 rounded-full bg-white shadow transition;
+  }
+
+  .setup-mock-toggle--on .setup-mock-toggle-knob {
+    @apply left-7;
+  }
+
+  .setup-mock-explanation {
+    @apply text-sm leading-relaxed text-violet-200/55;
+  }
+
+  .setup-mock-toast {
+    @apply rounded-xl bg-violet-500/25 px-4 py-3 text-center text-sm font-medium text-violet-50;
+    animation: fade-up 0.35s ease-out both;
+  }
 }
 
 @layer utilities {

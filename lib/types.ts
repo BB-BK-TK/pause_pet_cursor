@@ -4,6 +4,7 @@ export type ScreenName =
   | "onboardingAppSelect"
   | "onboardingZodiac"
   | "onboardingReveal"
+  | "permissionSetup"
   | "intervention"
   | "preventedSuccess"
   | "allowedDuration"
